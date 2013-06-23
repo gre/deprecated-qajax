@@ -1,0 +1,182 @@
+<!DOCTYPE html>  <html> <head>   <title>qajax.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               qajax.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="cm">/*</span>
+<span class="cm"> * Qajax.js - Simple Promise ajax library based on Q</span>
+<span class="cm"> */</span>
+<span class="cm">/*jslint newcap: true */</span>
+<span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">CONTENT_TYPE</span> <span class="o">=</span> <span class="s2">&quot;Content-Type&quot;</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <h1>Qajax</h1>
+
+<p><em>Perform an asynchronous HTTP request (ajax).</em></p>
+
+<h2>Parameters</h2>
+
+<p><code>settings</code> <strong>(object)</strong> or <strong>(string)</strong> URL:</p>
+
+<ul>
+<li><code>url</code> <strong>(string)</strong>: the URL of the resource</li>
+<li><code>method</code> <strong>(string)</strong> <em>optional</em>: the http method to use <em>(default: GET)</em>.</li>
+<li><code>timeout</code> <strong>(number)</strong> <em>optional</em>: the time in ms to reject the XHR if not terminated.</li>
+<li><code>data</code> <strong>(any)</strong> <em>optional</em>: the data to send.</li>
+<li>headers <strong>(object)</strong> <em>optional</em>: a map of headers to use for the XHR.</li>
+<li><code>xhr</code> <strong>(XMLHttpRequest)</strong> <em>optional</em>: provide your own XMLHttpRequest.</li>
+</ul>
+
+<h2>Result</h2>
+
+<p>returns a <strong>Promise of XHR</strong>, whatever the status code is.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">Qajax</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">settings</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>Validating arguments</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">settings</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Qajax: settings is required&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">settings</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">settings</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">settings</span> <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">settings</span><span class="p">.</span><span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;Qajax: settings.url is required&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">fcall</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="c1">// Protect from any exception</span>
+      <span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">xhr</span> <span class="o">||</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">(),</span>
+        <span class="nx">method</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">method</span> <span class="o">||</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+        <span class="nx">url</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span>
+        <span class="nx">timeout</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">||</span> <span class="nx">Qajax</span><span class="p">.</span><span class="nx">TIMEOUT</span><span class="p">,</span>
+        <span class="nx">xhrResult</span> <span class="o">=</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">defer</span><span class="p">(),</span>
+        <span class="nx">headers</span> <span class="o">=</span> <span class="nx">settings</span><span class="p">.</span><span class="nx">headers</span> <span class="o">||</span> <span class="p">{},</span>
+        <span class="nx">noCacheUrlParam</span> <span class="o">=</span> <span class="p">((</span><span class="nx">url</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">?</span> <span class="s2">&quot;?&quot;</span> <span class="o">:</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_=&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">()).</span><span class="nx">getTime</span><span class="p">();</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>if data is a Javascript object, JSON is used</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">data</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">data</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">CONTENT_TYPE</span> <span class="k">in</span> <span class="nx">headers</span><span class="p">))</span> <span class="p">{</span>
+          <span class="nx">headers</span><span class="p">[</span><span class="nx">CONTENT_TYPE</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;application/json&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-5">&#182;</a>               </div>               <p>Bind the XHR finished callback</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">xhr</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">===</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">try</span> <span class="p">{</span>
+            <span class="nx">log</span><span class="p">(</span><span class="nx">method</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">url</span> <span class="o">+</span> <span class="s2">&quot; =&gt; &quot;</span> <span class="o">+</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+              <span class="nx">xhrResult</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">xhr</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">xhrResult</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">xhr</span><span class="p">);</span> <span class="c1">// this case occured mainly when xhr.abort() has been called.</span>
+            <span class="p">}</span>
+          <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">xhrResult</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">xhr</span><span class="p">);</span> <span class="c1">// IE could throw an error</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-6">&#182;</a>               </div>               <p>Open the XHR</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">url</span> <span class="o">+</span> <span class="nx">noCacheUrlParam</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-7">&#182;</a>               </div>               <p>Add headers</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">h</span> <span class="k">in</span> <span class="nx">headers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">headers</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">h</span><span class="p">))</span> <span class="p">{</span>
+          <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="nx">h</span><span class="p">,</span> <span class="nx">headers</span><span class="p">[</span><span class="nx">h</span><span class="p">]);</span>
+        <span class="p">}</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-8">&#182;</a>               </div>               <p>Send the XHR</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">if</span> <span class="p">(</span><span class="nx">data</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+      <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-9">&#182;</a>               </div>               <p>Either the xhr promise or the timeout is reached</p>             </td>             <td class="code">               <div class="highlight"><pre>      <span class="k">return</span> <span class="nx">xhrResult</span><span class="p">.</span><span class="nx">promise</span><span class="p">.</span><span class="nx">timeout</span><span class="p">(</span><span class="nx">timeout</span><span class="p">).</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">errorOrXHR</span><span class="p">)</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <p>If timeout has reached (Error is triggered)</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">errorOrXHR</span> <span class="k">instanceof</span> <span class="nb">Error</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Qajax request delay reach in &quot;</span> <span class="o">+</span> <span class="nx">method</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nx">url</span><span class="p">);</span>
+          <span class="nx">xhr</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span> <span class="c1">// Abort this XHR so it can reject xhrResult</span>
+        <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-11">&#182;</a>               </div>               <p>Make the promise fail again.</p>             </td>             <td class="code">               <div class="highlight"><pre>        <span class="k">throw</span> <span class="nx">xhr</span><span class="p">;</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-12">&#182;</a>               </div>               <p>Default XMLHttpRequest timeout.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Qajax</span><span class="p">.</span><span class="nx">TIMEOUT</span> <span class="o">=</span> <span class="mi">60000</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-13">&#182;</a>               </div>               <h1>Qajax.filterStatus</h1>
+
+<p><em>Filter an XHR to a given status, to consider only valid status to be success.</em></p>
+
+<h2>Parameters</h2>
+
+<p><code>validStatus</code> <strong>(number or function)</strong>: either a http code (like 200) or a predicate function (statusCode).</p>
+
+<h2>Result</h2>
+
+<p>Returns a <strong>(function)</strong> returning a Promise of XHR considered successful (according to validStatus)</p>
+
+<h2>Usage example</h2>
+
+<p><code>Qajax(settings).then(Qajax.filterStatus(200))</code></p>
+
+<p><code>Qajax(settings).then(Qajax.filterStatus(function(s){ return s == 200 }))</code></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Qajax</span><span class="p">.</span><span class="nx">filterStatus</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">validStatus</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">check</span><span class="p">,</span> <span class="nx">typ</span><span class="p">;</span>
+    <span class="nx">typ</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">validStatus</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">typ</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">check</span> <span class="o">=</span> <span class="nx">validStatus</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">typ</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">check</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">s</span> <span class="o">===</span> <span class="nx">validStatus</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="s2">&quot;validStatus type &quot;</span> <span class="o">+</span> <span class="nx">typ</span> <span class="o">+</span> <span class="s2">&quot; unsupported&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">status</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">status</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span><span class="p">;</span> <span class="c1">// IE can fail to access status</span>
+      <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Qajax: failed to read xhr.status&quot;</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">1223</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">status</span> <span class="o">=</span> <span class="mi">204</span><span class="p">;</span> <span class="c1">// 204 No Content IE bug</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">check</span><span class="p">(</span><span class="nx">status</span><span class="p">)</span> <span class="o">?</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">xhr</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span><span class="nx">xhr</span><span class="p">);</span>
+    <span class="p">};</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-14">&#182;</a>               </div>               <h1>Qajax.filterSuccess</h1>
+
+<p><em>Filter all Success status code case.</em>
+A good example of <code>Qajax.filterStatus</code> implementation.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Qajax</span><span class="p">.</span><span class="nx">filterSuccess</span> <span class="o">=</span> <span class="nx">Qajax</span><span class="p">.</span><span class="nx">filterStatus</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">s</span> <span class="o">&gt;=</span> <span class="mi">200</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">)</span> <span class="o">||</span> <span class="nx">s</span> <span class="o">===</span> <span class="mi">304</span><span class="p">;</span>
+  <span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-15">&#182;</a>               </div>               <h1>Qajax.toJSON</h1>
+
+<p><em>Extract a JSON from a XHR.</em></p>
+
+<h2>Parameters</h2>
+
+<p><code>xhr</code> <strong>(XMLHttpRequest)</strong>: the XHR.</p>
+
+<h2>Result</h2>
+
+<p>A <strong>(promise)</strong> of the parsed JSON.</p>
+
+<h2>Usage example</h2>
+
+<p><code>Qajax(settings).then(Qajax.toJSON)</code></p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Qajax</span><span class="p">.</span><span class="nx">toJSON</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">Q</span><span class="p">.</span><span class="nx">fcall</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-16">&#182;</a>               </div>               <h1>Qajax.getJSON</h1>
+
+<p><em>Get a JSON from an URL - shortcut to Qajax.</em></p>
+
+<h2>Parameters</h2>
+
+<p><code>url</code> <strong>(string)</strong>: the ressource to fetch.</p>
+
+<h2>Result</h2>
+
+<p>Returns a <strong>(promise)</strong> of a JS Object.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Qajax</span><span class="p">.</span><span class="nx">getJSON</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">Qajax</span><span class="p">({</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span> <span class="nx">method</span><span class="o">:</span> <span class="s2">&quot;GET&quot;</span> <span class="p">})</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">Qajax</span><span class="p">.</span><span class="nx">filterSuccess</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">Qajax</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">);</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-17">&#182;</a>               </div>               <h1>Qajax.serialize</h1>
+
+<p><em>Make a query string from a JS Object.</em></p>
+
+<h2>Parameters</h2>
+
+<p><code>paramsObj</code> <strong>(object)</strong> the params to serialize.</p>
+
+<h2>Result</h2>
+
+<p>Returns the serialized query <strong>(string)</strong>.</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nx">Qajax</span><span class="p">.</span><span class="nx">serialize</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">paramsObj</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">k</span> <span class="k">in</span> <span class="nx">paramsObj</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">paramsObj</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">k</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">params</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">paramsObj</span><span class="p">[</span><span class="nx">k</span><span class="p">]));</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">params</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">);</span>
+  <span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-18">&#182;</a>               </div>               <p>safe log function</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="kd">var</span> <span class="nx">log</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">msg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">msg</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="nb">window</span><span class="p">.</span><span class="nx">Qajax</span> <span class="o">=</span> <span class="nx">Qajax</span><span class="p">;</span>
+
+<span class="p">}());</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
