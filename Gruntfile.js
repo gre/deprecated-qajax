@@ -3,14 +3,12 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     uglify: {
-      all: {
-        options: {
-          banner: '/*! <%= pkg.name %> <%= pkg.version %> - <%= pkg.description %> */\n'
-        },
-        build: {
-          src: 'src/<%= pkg.name %>.js',
-          dest: 'build/<%= pkg.name %>.min.js'
-        }
+      options: {
+        banner: '/*! <%= pkg.name %> <%= pkg.version %> - <%= pkg.description %> */\n'
+      },
+      build: {
+        src: 'src/<%= pkg.name %>.js',
+        dest: 'build/<%= pkg.name %>.min.js'
       }
     },
     jshint: {
