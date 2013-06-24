@@ -1,25 +1,20 @@
 Qajax
 ===
-A simple Promise ajax library based on [Q](https://github.com/kriskowal/q).
+A simple Promise-based ajax library based on [Q](https://github.com/kriskowal/q).
 
 **Qajax** is a simple and pure `XMLHttpRequest` wrapper.
 
 Supported browsers
 ---
 
-All browsers are supported including IE.
-
-Tests
----
-
-The library is stress-tested with `qunit` and a python server *(this will be rewrote in the future with a node server)* and test different edge-cases like different HTTP code, method, server lag,...
+All browsers are supported (including IE).
 
 Usages and explanations
 ---
 
-**Qajax** does not involve magic but do the strict minimum to work with **ajax** on all browsers (IE is supported!).
+**Qajax** does not involve magic but does the strict minimum to work with **ajax** on all browsers (IE is supported!).
 
-**Qajax** has been thought with **Promise** and split up into simpler functions composable with `.then`.
+**Qajax** has been designed using **Promise** and split up into pure functions composable with `.then`.
 
 The `Qajax` function **just** returns a successful **Promise of XHR** when the server has returned a result - whatever the `status` code is.
 
@@ -101,14 +96,14 @@ var lastYearYoungPeople =
 More advanced features
 ---
 
-* Qajax have a **timeout**:
+* Qajax has a **timeout**:
 
 ```javascript
 var p = Qajax.ajax({ url: "/", timeout: 5000 });
 // p will be rejected if the server is not responding in 5 seconds.
 ```
 
-The default timeout is `Qajax.TIMEOUT` and can be overrided.
+The default timeout is `Qajax.TIMEOUT` and can be overriden.
 
 * You can set XHR headers by giving the header options.
 
@@ -136,4 +131,10 @@ function getResults (query) {
  * the previous xhr is aborted if still running so it let the latest query have the priority.
  */
 ```
+
+Tests
+---
+
+The library is stress-tested with `qunit` and a python server *(this will be rewritten in the future with a node server)* and test different edge-cases like different HTTP code, method, server lag,...
+
 
