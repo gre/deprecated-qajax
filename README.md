@@ -17,25 +17,28 @@ The library is stress-tested with `qunit` and a python server *(this will be rew
 Usages and explanations
 ---
 
-Qajax does not involve magic but do the strict minimum to work with **ajax** on all browsers (IE is supported!).
+**Qajax** does not involve magic but do the strict minimum to work with **ajax** on all browsers (IE is supported!).
 
-Qajax has been though with **Promise** and split up into simpler & composable parts (with `.then`).
+**Qajax** has been thought with **Promise** and split up into simpler functions composable with `.then`.
+
+The `Qajax` function **just** returns a successful **Promise of XHR** when the server has returned a result - whatever the `status` code is.
 
 ```javascript
 var promiseOfXHR = Qajax("/all.json");
 // short version of: Qajax({ url: "/all.json", method: "GET" });
 ```
 
-The `Qajax` function is **pure** in the sense that it returns a successful **Promise of XHR** when the server has returned a result and whatever the `status` code is.
+At this time, the promise is only rejected if the server has failed to reply to the client (network problem or timeout reached).
 
-If you want to filter only on success status, use the `Qajax.filterSuccess` function:
+If you want to **filter only on success statuses**, then you need the `Qajax.filterSuccess` function:
 
 ```javascript
 var promiseOfSuccessfulXHR = 
   Qajax("/all.json").then(Qajax.filterSuccess);
 ```
 
-You can also provide you own filter logic:
+But you can also **provide you own filter logic**:
+
 ```javascript
 var promiseOf200XHR = 
   Qajax("/all.json")
@@ -44,7 +47,7 @@ var promiseOf200XHR =
   }));
 ```
 
-You can then map it to a JSON:
+And at the end you can **map it to a JSON**:
 
 ```javascript
 var promiseOfJson = 
@@ -53,7 +56,7 @@ var promiseOfJson =
   .then(Qajax.toJSON);
 ```
 
-Or use the shortcut JSON getter:
+Or you can use the getJSON shortcut for this specific use-case:
 
 ```javascript
 var promiseOfJson = Qajax.getJSON("/all.json");
@@ -62,7 +65,7 @@ var promiseOfJson = Qajax.getJSON("/all.json");
 POST & submit data
 ---
 
-Of-course, you can do POST with Qajax:
+Of-course, you can use other HTTP Verbs like POST with **Qajax**:
 
 ```javascript
 Qajax({ url: "/entry", method: "POST" })
@@ -87,7 +90,7 @@ Qajax({ url: "/people", method: "POST", data: { name: "Gaetan", age: 23 } })
 Helpers
 ---
 
-**Qajax.serialize**:
+**Qajax.serialize** helps you to deal with query string parameters:
 
 ```javascript
 var lastYearYoungPeople = 
