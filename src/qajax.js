@@ -2,7 +2,13 @@
  * Qajax.js - Simple Promise ajax library based on Q
  */
 /*jslint newcap: true */
-(function () {
+(function (definition) {
+    if (typeof exports === "object") {
+        module.exports = definition();
+    } else {
+        window.Qajax = definition();
+    }
+})(function () {
   "use strict";
 
   var CONTENT_TYPE = "Content-Type";
@@ -227,6 +233,6 @@
     }
   };
 
-  window.Qajax = Qajax;
+  return Qajax;
 
-}());
+});
