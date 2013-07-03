@@ -99,7 +99,7 @@ More advanced features
 * Qajax has a **timeout**:
 
 ```javascript
-var p = Qajax.ajax({ url: "/", timeout: 5000 });
+var p = Qajax({ url: "/", timeout: 5000 });
 // p will be rejected if the server is not responding in 5 seconds.
 ```
 
@@ -131,6 +131,11 @@ function getResults (query) {
  * the previous xhr is aborted if still running so it let the latest query have the priority.
  */
 ```
+
+Documentation
+---
+
+[Checkout the Annotated Source Code](http://greweb.me/qajax/docs/qajax.html)
 
 Tests
 ---
