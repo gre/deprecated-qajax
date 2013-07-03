@@ -105,9 +105,9 @@ var p = Qajax({ url: "/", timeout: 5000 });
 
 The default timeout is `Qajax.TIMEOUT` and can be overriden.
 
-* You can set XHR headers by giving the header options.
+* You can set XHR headers by giving the `header` options.
 
-* You can give your own XMLHttpRequest object to use!
+* You can give your own `XMLHttpRequest` object to use!
 
 Here is a typical use case:
 
