@@ -11,6 +11,8 @@
 })(function () {
   "use strict";
 
+  var Q = window.Q || require("q");
+
   var CONTENT_TYPE = "Content-Type";
 
   // Qajax
