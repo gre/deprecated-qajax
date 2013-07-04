@@ -18,7 +18,7 @@
     "grunt-docco": "~0.2.0",
     "grunt-contrib-watch": "~0.4.4"
   },
-  "main": "Gruntfile.js",
+  "main": "src/qajax.js",
   "license": "BSD",
   "repository": {
     "type": "git",
