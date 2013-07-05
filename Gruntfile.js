@@ -98,7 +98,7 @@ module.exports = function(grunt) {
           urls: ["http://127.0.0.1:9999/test/index.html"],
           tunnelTimeout: 5,
           build: (new Date()).getTime(),
-          concurrency: 3,
+          concurrency: 1,
           browsers: browsers,
           testname: "Qajax tests",
           testReadyTimeout: 30000,
