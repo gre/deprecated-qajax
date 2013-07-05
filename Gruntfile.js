@@ -1,56 +1,73 @@
 module.exports = function(grunt) {
-  var browsers = [
-    /*
-    {"browserName": "iehta",
-    "platform": "Windows XP",
-    "version": "6"},
-    {"browserName": "iehta",
-    "platform": "Windows XP",
-    "version": "7"},
-    */
-    {"browserName": "iehta",
-    "platform": "Windows XP",
-    "version": "8"},
-    {"browserName": "iehta",
-    "platform": "Windows 7",
-    "version": "8"},
-    {"browserName": "iehta",
-    "platform": "Windows 7",
-    "version": "9"},
-    {"browserName": "internet explorer",
-    "platform": "Windows 8",
-    "version": "10"},
-    {"browserName": "opera",
-    "platform": "Windows 7",
-    "version": "12"},
-    {"browserName": "googlechrome",
-    "platform": "Windows 7",
-    "version": ""},
-    {"browserName": "firefox",
-    "platform": "Windows XP",
-    "version": "19"},
-    {"browserName": "firefox",
-    "platform": "Windows 7",
-    "version": "20"},
-    {"browserName": "firefox",
-    "platform": "Windows 8",
-    "version": "21"},
-    {"browserName": "safari",
-    "platform": "OS X 10.6",
-    "version": "5"},
-    {"browserName": "safari",
-    "platform": "OS X 10.8",
-    "version": "6"},
-    {"browserName": "firefox",
-    "platform": "Linux",
-    "version": "22"},
-    {"browserName": "googlechrome",
-    "platform": "Linux",
-    "version": ""},
-    {"browserName": "googlechrome",
-    "platform": "OS X 10.6",
-    "version": ""}
-  ];
+  var browsers = [{
+        browserName: "opera",
+        platform: "Windows 7",
+        version: "12"
+    },{
+        browserName: "googlechrome",
+        platform: "OS X 10.6"
+    },{
+        browserName: "googlechrome",
+        platform: "linux"
+    },{
+        browserName: "chrome",
+        platform: "Windows 7"
+    },{
+        browserName: "googlechrome",
+        platform: "Windows XP"
+    },{
+        browserName: "internet explorer",
+        platform: "Windows 8",
+        version: "10"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "21"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "20"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "19"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "18"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "17"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "16"
+    },{
+        browserName:"iphone",
+        platform: "OS X 10.8",
+        version: "6"
+    },{
+        browserName:"iphone",
+        platform: "OS X 10.8",
+        version: "5.1"
+    },{
+        browserName:"iphone",
+        platform: "OS X 10.6",
+        version: "5.0"
+    },{
+        browserName:"safari",
+        platform: "OS X 10.8",
+        version: "6"
+    },{
+        browserName:"safari",
+        platform: "OS X 10.6",
+        version: "5"
+    },{
+        browserName:"android",
+        platform: "Linux",
+        version: "4.0"
+    }];
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
