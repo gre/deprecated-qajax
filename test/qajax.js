@@ -13,6 +13,7 @@ function urlWithOptions (url, options) {
 }
 
 function checkNotSuccess (res) { console.log(res); throw "The result should never be successful!"; }
+function checkNotError (err) { console.log(err); throw "An error has been reached. "+err; }
 
 test("check the API needed for the test engine", function() {
   Qajax.TIMEOUT = 500;
@@ -28,7 +29,7 @@ asyncTest("Qajax.getJSON successful", 1, function() {
     deepEqual(res, sample01json, "sample01.json successfully retrieved.");
   }
   Qajax.getJSON(sample01url)
-     .then(checkResult)
+     .then(checkResult, checkNotError)
      .fin(start);
 });
 
@@ -39,7 +40,7 @@ asyncTest("Qajax successful", 1, function() {
   Qajax(sample01url)
      .then(Qajax.filterSuccess)
      .then(Qajax.toJSON)
-     .then(checkResult)
+     .then(checkResult, checkNotError)
      .fin(start);
 });
 
@@ -69,7 +70,7 @@ asyncTest("data can be sent", function() {
     data: data
   })
     .then(Qajax.filterSuccess)
-    .then(checkData)
+    .then(checkData, checkNotError)
     .fin(start);
 });
 
@@ -85,7 +86,7 @@ asyncTest("json data can be sent", function() {
   })
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)
-    .then(checkData)
+    .then(checkData, checkNotError)
     .fin(start);
 });
 
@@ -158,6 +159,6 @@ asyncTest("Qajax timeout can be overrided", function() {
     url: urlWithOptions(sample01url, { latency: 500 }),
     timeout: 800
   })
-    .then(checkSuccess)
+    .then(checkSuccess, checkNotError)
     .fin(start);
 });
