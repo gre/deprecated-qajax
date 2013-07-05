@@ -1,46 +1,54 @@
 module.exports = function(grunt) {
-  var browsers = [{
-    browserName: "internet explorer",
-    version: "8"
-  },{
-    browserName: "internet explorer",
-    version: "9"
-  },{
-    browserName: "internet explorer",
-    version: "10"
-  },{
-    browserName:"android",
-    version: "4.0"
-  },{
-    browserName:"iphone"
-  },{
-    browserName: "chrome",
-    platform: "linux"
-  },{
-    browserName: "chrome",
-    platform: "Windows 7"
-  },{
-    browserName: "googlechrome",
-    platform: "Windows XP"
-  },{
-    browserName: "firefox",
-    version: "21"
-  },{
-    browserName: "firefox",
-    version: "20"
-  },{
-    browserName: "firefox",
-    version: "19"
-  },{
-    browserName: "firefox",
-    version: "18"
-  },{
-    browserName:"safari",
-    version: "6"
-  },{
-    browserName:"safari",
-    version: "5"
-  }];
+  var browsers = [
+    {"browser": "iehta",
+"os": "Windows XP",
+"browser-version": "7"},
+  {"browser": "iehta",
+"os": "Windows XP",
+"browser-version": "6"},
+  {"browser": "internet explorer",
+"os": "Windows 8",
+"browser-version": "10"},
+  {"browser": "googlechrome",
+"os": "Windows 7",
+"browser-version": ""},
+  {"browser": "iehta",
+"os": "Windows XP",
+"browser-version": "8"},
+  {"browser": "iehta",
+"os": "Windows 7",
+"browser-version": "8"},
+  {"browser": "iehta",
+"os": "Windows 7",
+"browser-version": "9"},
+  {"browser": "opera",
+"os": "Windows 7",
+"browser-version": "12"},
+{"browser": "firefox",
+"os": "Windows 8",
+"browser-version": "21"},
+  {"browser": "firefox",
+"os": "Windows 7",
+"browser-version": "20"},
+  {"browser": "firefox",
+"os": "Windows XP",
+"browser-version": "19"},
+    {"browser": "safari",
+"os": "OS X 10.6",
+"browser-version": "5"},
+  {"browser": "safari",
+"os": "OS X 10.8",
+"browser-version": "6"},
+  {"browser": "firefox",
+"os": "Linux",
+"browser-version": "22"},
+  {"browser": "googlechrome",
+"os": "Linux",
+"browser-version": ""},
+  {"browser": "googlechrome",
+"os": "OS X 10.6",
+"browser-version": ""}
+  ];
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),

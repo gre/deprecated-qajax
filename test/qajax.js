@@ -124,14 +124,14 @@ asyncTest("an external XHR can be used and abort() manually", function() {
     notEqual(e.status, 200, "status is not 200");
   }
   var xhr = new XMLHttpRequest();
-  Qajax({ xhr: xhr, url: urlWithOptions(emptyUrl, { latency: 100 }) })
+  Qajax({ xhr: xhr, url: urlWithOptions(emptyUrl, { latency: 400 }) })
      .then(Qajax.filterSuccess)
      .then(Qajax.toJSON)
      .then(checkNotSuccess, checkError)
      .fin(start);
   setTimeout(function(){
     xhr.abort();
-  }, 30);
+  }, 100);
 });
 
 asyncTest("Qajax default timeout works", function() {
