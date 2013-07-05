@@ -150,7 +150,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['jshint', 'uglify', 'docco']);
-  grunt.registerTask('dev', ['mock-server', "watch"]);
+  grunt.registerTask('test-local', ['mock-server', "watch"]);
   grunt.registerTask('test', ['mock-server', "saucelabs-qunit"]);
 
 };
