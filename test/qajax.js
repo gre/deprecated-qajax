@@ -140,10 +140,10 @@ asyncTest("Qajax default timeout works", function() {
     equal(e.readyState, 0, "readyState is 0 (the request was never finished)");
     notEqual(e.status, 200, "status is not 200");
   }
-  Qajax.TIMEOUT = 300;
+  Qajax.TIMEOUT = 200;
   Qajax({
     method: "DELETE", 
-    url: urlWithOptions(sample01url, { latency: 1500 })
+    url: urlWithOptions(sample01url, { latency: 500 })
   })
     .then(checkNotSuccess, checkError)
     .fin(start);
@@ -156,7 +156,7 @@ asyncTest("Qajax timeout can be overrided", function() {
   }
   Qajax({
     method: "POST", 
-    url: urlWithOptions(sample01url, { latency: 500 }),
+    url: urlWithOptions(sample01url, { latency: 300 }),
     timeout: 2000
   })
     .then(checkSuccess, checkNotError)
