@@ -115,7 +115,42 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-docco');
   grunt.loadNpmTasks('grunt-saucelabs');
 
+  grunt.registerTask('mock-server', 'Start a mock server to test Qajax.', function() {
+    var connect = require('connect'), URL = require('url');
+    grunt.log.writeln('Starting server...');
+    connect().use(function (req, res, next) {
+      grunt.log.writeln(req.method+" "+req.url);
+      var url = URL.parse(req.url, true);
+      var handle = (function () {
+        var status = ("status" in url.query) ? parseInt(url.query.status) : 200;
+        if (url.pathname == "/ECHO") {
+          return function () {
+            res.writeHead(status);
+            req.pipe(res);
+          };
+        }
+        if (url.pathname.indexOf("/test/dataset/")===0) {
+          req.method = "GET"; // next layer will behave like a GET so return the dataset content as a result.
+          return function () {
+            if (status != 200) {
+              res.statusCode = status; // next layer will have this default statusCode for the response.
+            }
+            return next();
+          };
+        }
+        return next;
+      }());
+      if ("latency" in url.query)
+        setTimeout(handle, parseInt(url.query.latency));
+      else
+        handle();
+    })
+    .use(connect.static(__dirname))
+    .listen(9999);
+  });
+
   grunt.registerTask('default', ['jshint', 'uglify', 'docco']);
-  grunt.registerTask('test', ['connect', "saucelabs-qunit"]);
+  grunt.registerTask('dev', ['mock-server', "watch"]);
+  grunt.registerTask('test', ['mock-server', "saucelabs-qunit"]);
 
 };
