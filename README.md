@@ -9,6 +9,22 @@ Supported browsers
 
 All browsers are supported (including IE).
 
+Installation
+---
+
+```sh
+bower install qajax
+```
+
+Also available on [NPM](https://npmjs.org/package/qajax).
+
+Tests
+---
+
+The library is stress-tested with `qunit` and a mock node.js server which test different edge-cases like different HTTP code, method, server lag,...
+
+[![SauceLabs Status](https://saucelabs.com/browser-matrix/qajax.svg)](https://saucelabs.com/u/qajax)
+
 Usages and explanations
 ---
 
@@ -132,14 +148,5 @@ function getResults (query) {
  */
 ```
 
-Documentation
----
-
 [Checkout the Annotated Source Code](http://greweb.me/qajax/docs/qajax.html)
-
-Tests
----
-
-The library is stress-tested with `qunit` and a python server *(this will be rewritten in the future with a node server)* and test different edge-cases like different HTTP code, method, server lag,...
-
 
