@@ -16,7 +16,7 @@ function checkNotSuccess (res) { console.log(res); throw "The result should neve
 function checkNotError (err) { console.log(err); throw "An error has been reached. "+err; }
 
 test("check the API needed for the test engine", function() {
-  Qajax.TIMEOUT = 500;
+  Qajax.TIMEOUT = 1000;
   ok(typeof Qajax=="function", "Qajax exists");
   ok(typeof Qajax.filterStatus=="function", "filterStatus exists");
   ok(typeof Qajax.filterSuccess=="function", "filterSuccess exists");
@@ -140,10 +140,10 @@ asyncTest("Qajax default timeout works", function() {
     equal(e.readyState, 0, "readyState is 0 (the request was never finished)");
     notEqual(e.status, 200, "status is not 200");
   }
-  Qajax.TIMEOUT = 200;
+  Qajax.TIMEOUT = 300;
   Qajax({
     method: "DELETE", 
-    url: urlWithOptions(sample01url, { latency: 300 })
+    url: urlWithOptions(sample01url, { latency: 1500 })
   })
     .then(checkNotSuccess, checkError)
     .fin(start);
@@ -157,7 +157,7 @@ asyncTest("Qajax timeout can be overrided", function() {
   Qajax({
     method: "POST", 
     url: urlWithOptions(sample01url, { latency: 500 }),
-    timeout: 800
+    timeout: 2000
   })
     .then(checkSuccess, checkNotError)
     .fin(start);

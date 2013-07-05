@@ -116,10 +116,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-saucelabs');
 
   grunt.registerTask('mock-server', 'Start a mock server to test Qajax.', function() {
+
+    function delay (callback, timeout) {
+      setTimeout(callback, timeout);
+    }
+
     var connect = require('connect'), URL = require('url');
     grunt.log.writeln('Starting server...');
     connect().use(function (req, res, next) {
-      grunt.log.writeln(req.method+" "+req.url);
       var url = URL.parse(req.url, true);
       var handle = (function () {
         var status = ("status" in url.query) ? parseInt(url.query.status) : 200;
@@ -141,7 +145,7 @@ module.exports = function(grunt) {
         return next;
       }());
       if ("latency" in url.query)
-        setTimeout(handle, parseInt(url.query.latency));
+        delay(handle, parseInt(url.query.latency));
       else
         handle();
     })
