@@ -9,6 +9,8 @@ Supported browsers
 
 All browsers are supported (including IE).
 
+[![SauceLabs Status](https://saucelabs.com/browser-matrix/qajax.svg)](https://saucelabs.com/u/qajax)
+
 Installation
 ---
 
