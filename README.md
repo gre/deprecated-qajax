@@ -177,6 +177,10 @@ Then run ```grunt```.
 Release Note
 ---
 
+0.1.4
+
+* AMD module compatibility
+
 0.1.3
 
 * Add new signature `Qajax(url, settings)` + validation

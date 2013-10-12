@@ -1,6 +1,6 @@
 {
   "name": "qajax",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Simple Promise ajax library based on Q",
   "keywords": [
     "q",
