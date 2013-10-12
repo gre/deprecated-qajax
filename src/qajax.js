@@ -3,15 +3,19 @@
  */
 /*jslint newcap: true */
 (function (definition) {
-    if (typeof exports === "object") {
-        module.exports = definition();
-    } else {
-        window.Qajax = definition();
-    }
+  var Q;
+  if (typeof exports === "object") {
+    Q = require("q");
+    module.exports = definition();
+  }
+  else if (typeof define === 'function' && define.amd){
+    if (Q) define(definition());
+    else define(['q'], definition());
+  }
+  else
+    window.Qajax = definition();
 })(function () {
   "use strict";
-
-  var Q = window.Q || require("q");
 
   var CONTENT_TYPE = "Content-Type";
 
