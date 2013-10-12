@@ -34,7 +34,7 @@
   // ---
   // returns a **Promise of XHR**, whatever the status code is.
   //
-  var Qajax = function (settings) {
+  var Qajax = function () {
     var args = arguments, settings;
     // Validating arguments
     if (!args.length) {
