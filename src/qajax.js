@@ -9,8 +9,7 @@
     module.exports = definition(Q);
   }
   else if (typeof define === 'function' && define.amd){
-    if (Q) define(definition);
-    else define(['q'], definition);
+    define(['q'], definition);
   }
   else {
     Q = window.Q;
