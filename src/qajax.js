@@ -3,15 +3,20 @@
  */
 /*jslint newcap: true */
 (function (definition) {
-    if (typeof exports === "object") {
-        module.exports = definition();
-    } else {
-        window.Qajax = definition();
-    }
-})(function () {
+  var Q;
+  if (typeof exports === "object") {
+    Q = require("q");
+    module.exports = definition(Q);
+  }
+  else if (typeof define === 'function' && define.amd){
+    define(['q'], definition);
+  }
+  else {
+    Q = window.Q;
+    window.Qajax = definition(Q);
+  }
+})(function (Q) {
   "use strict";
-
-  var Q = window.Q || require("q");
 
   var CONTENT_TYPE = "Content-Type";
 
