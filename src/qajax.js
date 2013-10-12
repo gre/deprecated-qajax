@@ -35,12 +35,20 @@
   // returns a **Promise of XHR**, whatever the status code is.
   //
   var Qajax = function (settings) {
+    var args = arguments, settings;
     // Validating arguments
-    if (!settings) {
-      throw "Qajax: settings is required";
+    if (!args.length) {
+      throw "Qajax: settings are required";
     }
-    if (typeof settings === "string") {
-      settings = { url: settings };
+    if (typeof args[0] === "string") {
+      settings = (typeof args[1] === 'object' && args[1]) || {};
+      settings.url = args[0];
+    }
+    else if (typeof args[0] === "object"){
+      settings = args[0];
+    }
+    else {
+      throw "Qajax: settings must be an object";
     }
     if (!settings.url) {
       throw "Qajax: settings.url is required";
