@@ -6,15 +6,17 @@
   var Q;
   if (typeof exports === "object") {
     Q = require("q");
-    module.exports = definition();
+    module.exports = definition(Q);
   }
   else if (typeof define === 'function' && define.amd){
-    if (Q) define(definition());
-    else define(['q'], definition());
+    if (Q) define(definition);
+    else define(['q'], definition);
   }
-  else
-    window.Qajax = definition();
-})(function () {
+  else {
+    Q = window.Q;
+    window.Qajax = definition(Q);
+  }
+})(function (Q) {
   "use strict";
 
   var CONTENT_TYPE = "Content-Type";
