@@ -19,6 +19,13 @@
   // ===
   // *Perform an asynchronous HTTP request (ajax).*
   //
+  // Signatures
+  // ---
+  //
+  // * `Qajax(url: String) => Promise[XHR]`
+  // * `Qajax(options: Object) => Promise[XHR]`
+  // * `Qajax(url: String, options: Object) => Promise[XHR]`
+  //
   // Parameters
   // ---
   // `settings` **(object)** or **(string)** URL:
@@ -36,7 +43,7 @@
   //
   var Qajax = function () {
     var args = arguments, settings;
-    // Validating arguments
+    /* Validating arguments */
     if (!args.length) {
       throw "Qajax: settings are required";
     }

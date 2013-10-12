@@ -18,12 +18,10 @@ bower install qajax
 
 Also available on [NPM](https://npmjs.org/package/qajax).
 
-Tests
+Links
 ---
 
-The library is stress-tested with `qunit` and a mock node.js server which test different edge-cases like different HTTP code, method, server lag,...
-
-[![SauceLabs Status](https://saucelabs.com/browser-matrix/qajax.svg)](https://saucelabs.com/u/qajax)
+[Checkout the Annotated Source Code](http://greweb.me/qajax/docs/qajax.html)
 
 Usages and explanations
 ---
@@ -33,6 +31,17 @@ Usages and explanations
 **Qajax** has been designed using **Promise** and split up into pure functions composable with `.then`.
 
 The `Qajax` function **just** returns a successful **Promise of XHR** when the server has returned a result - whatever the `status` code is.
+
+
+There are 3 possible signatures:
+
+```javascript
+Qajax(url: String) => Promise[XHR]
+Qajax(options: Object) => Promise[XHR]
+Qajax(url: String, options: Object) => Promise[XHR]
+```
+
+Simple usage:
 
 ```javascript
 var promiseOfXHR = Qajax("/all.json");
@@ -115,7 +124,7 @@ More advanced features
 * Qajax has a **timeout**:
 
 ```javascript
-var p = Qajax({ url: "/", timeout: 5000 });
+var p = Qajax("/", { timeout: 5000 });
 // p will be rejected if the server is not responding in 5 seconds.
 ```
 
@@ -148,5 +157,36 @@ function getResults (query) {
  */
 ```
 
-[Checkout the Annotated Source Code](http://greweb.me/qajax/docs/qajax.html)
+Tests
+---
 
+The library is stress-tested with `qunit` and a mock node.js server which test different edge-cases like different HTTP code, method, server lag,...
+
+[![SauceLabs Status](https://saucelabs.com/browser-matrix/qajax.svg)](https://saucelabs.com/u/qajax)
+
+Test locally: `grunt test-local` and go to `http://localhost:9999/test/`.
+
+Development
+---
+
+Install dev deps with ```npm install```.
+Then run ```grunt```.
+
+Release Note
+---
+
+0.1.3
+
+* Add new signature `Qajax(url, settings)` + validation
+
+0.1.2
+
+* Using require('q') properly
+
+0.1.1
+
+* Fix CommonJS compatibility
+
+0.1.0
+
+* Initial release with Qajax, filterStatus, filterSuccess, toJSON, getJSON, serialize
