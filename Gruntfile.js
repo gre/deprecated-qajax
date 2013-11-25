@@ -133,7 +133,7 @@ module.exports = function(grunt) {
     connect().use(function (req, res, next) {
       var url = URL.parse(req.url, true);
       var handle = (function () {
-        var status = ("status" in url.query) ? parseInt(url.query.status) : 200;
+        var status = ("status" in url.query) ? parseInt(url.query.status, 10) : 200;
         if (url.pathname == "/ECHO") {
           return function () {
             res.writeHead(status);
@@ -152,7 +152,7 @@ module.exports = function(grunt) {
         return next;
       }());
       if ("latency" in url.query)
-        delay(handle, parseInt(url.query.latency));
+        delay(handle, parseInt(url.query.latency, 10));
       else
         handle();
     })

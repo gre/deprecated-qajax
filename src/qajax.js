@@ -68,13 +68,14 @@
 
     return Q.fcall(function () { // Protect from any exception
       var xhr = settings.xhr || new XMLHttpRequest(),
-        method = settings.method || "GET",
+        method = settings.method || Qajax.defaults.method,
         url = settings.url,
         data = settings.data,
-        timeout = settings.timeout || Qajax.TIMEOUT,
+        // TODO: remove Qajax.TIMEOUT before next major release
+        timeout = "timeout" in settings ? settings.timeout : Qajax.TIMEOUT || Qajax.defaults.timeout,
         xhrResult = Q.defer(),
-        headers = settings.headers || {},
-        noCacheUrlParam = ((url.indexOf("?") === -1) ? "?" : "&") + "_=" + (new Date()).getTime();
+        headers = settings.headers || Qajax.defaults.headers,
+        noCacheUrlParam = ("ie" in settings ? settings.ie : Qajax.defaults.ie) && ((url.indexOf("?") === -1) ? "?" : "&") + "_=" + (new Date()).getTime() || "";
 
       // if data is a Javascript object, JSON is used
       if (data !== null && typeof data === "object") {
@@ -117,21 +118,45 @@
         xhr.send();
       }
 
-      // Either the xhr promise or the timeout is reached
-      return xhrResult.promise.timeout(timeout).fail(function (errorOrXHR) {
-        // If timeout has reached (Error is triggered)
-        if (errorOrXHR instanceof Error) {
-          log("Qajax request delay reach in " + method + " " + url);
-          xhr.abort(); // Abort this XHR so it can reject xhrResult
-        }
-        // Make the promise fail again.
-        throw xhr;
-      });
+      // If no timeout, just retourn the promise
+      if (!timeout) {
+        return xhrResult.promise;
+      }
+      // Else, either the xhr promise or the timeout is reached
+      else {
+        return xhrResult.promise.timeout(timeout).fail(function (errorOrXHR) {
+          // If timeout has reached (Error is triggered)
+          if (errorOrXHR instanceof Error) {
+            log("Qajax request delay reach in " + method + " " + url);
+            xhr.abort(); // Abort this XHR so it can reject xhrResult
+          }
+          // Make the promise fail again.
+          throw xhr;
+        });
+      }
     });
   };
 
+  // DEPRECATED. Use Qajax.defaults.timeout instead.
   // Default XMLHttpRequest timeout.
-  Qajax.TIMEOUT = 60000;
+  Qajax.TIMEOUT = undefined;
+
+  // Defaults settings of Qajax
+  // Feel free to override any of them.
+  Qajax.defaults = {
+    // [boolean] Flag to enable logs
+    logs: false,
+    // [number] The timeout, in ms, to apply to the request.
+    // If no response after that delay, the promise will be failed
+    timeout: 60000,
+    // [boolean] IE flag to enable a hack appending the current timestamp
+    // to your requests to prevent IE from caching them and always returning the same result.
+    ie: false,
+    // [string] The default HTTP method to apply when calling Qajax(url) 
+    method: "GET",
+    // [object] The default HTTP headers to apply to your requests
+    headers: {}
+  };
 
   // Qajax.filterStatus
   // ===
@@ -250,7 +275,7 @@
 
   // safe log function
   var log = function (msg) {
-    if (window.console) {
+    if (Qajax.defaults.logs && window.console) {
       console.log(msg);
     }
   };
