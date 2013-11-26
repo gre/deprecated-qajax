@@ -11,7 +11,21 @@
   "author": "Gaëtan Renaudeau <renaudeau.gaetan@gmail.com>",
   "contributors": [
     {
+      "name": "Paul Panserrieu",
+      "email": "paul@42loops.com",
+      "url": "http://42loops.com/"
+    },
+    {
+      "name": "Alexandre Stanislawski",
+      "url": "http://bobylito.me/"
+    },
+    {
       "name": "Sean McMurray"
+    },
+    {
+      "name": "Paul Dijou",
+      "email": "paul.dijou+dev@gmail.com",
+      "url": "http://pauldijou.com"
     }
   ],
   "dependencies" : {
