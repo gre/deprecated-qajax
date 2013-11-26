@@ -20,6 +20,36 @@
 
   var CONTENT_TYPE = "Content-Type";
 
+  // Private util functions
+  // ===
+
+  // Get a param from the current settings of the request,
+  // if missing, try to return the "else" argument,
+  // if also missing, return it from the "defaults"
+  function getOrElse(paramName, settings, orElse) {
+    settings = settings || {};
+    if (orElse === undefined || orElse === null) {
+      orElse = Qajax.defaults[paramName];
+    }
+    return (paramName in settings ? settings[paramName] : orElse);
+  }
+
+  // Serialize a map of properties (as a JavaScript object) to a query string
+  function serializeQuery(paramsObj) {
+    var k, params = [];
+    for (k in paramsObj) {
+      if (paramsObj.hasOwnProperty(k)) {
+        params.push(encodeURIComponent(k) + "=" + encodeURIComponent(paramsObj[k]));
+      }
+    }
+    return params.join("&");
+  }
+
+  // Test if a given url has already a query string
+  function hasQuery(url) {
+    return (url.indexOf("?") === -1);
+  }
+
   // Qajax
   // ===
   // *Perform an asynchronous HTTP request (ajax).*
@@ -68,14 +98,33 @@
 
     return Q.fcall(function () { // Protect from any exception
       var xhr = settings.xhr || new XMLHttpRequest(),
-        method = settings.method || Qajax.defaults.method,
+        method = getOrElse("method", settings),
+        base = getOrElse("base", settings),
         url = settings.url,
         data = settings.data,
-        // TODO: remove Qajax.TIMEOUT before next major release
-        timeout = "timeout" in settings ? settings.timeout : Qajax.TIMEOUT || Qajax.defaults.timeout,
+        params = settings.params || {},
+        queryParams = serializeQuery(params),
         xhrResult = Q.defer(),
-        headers = settings.headers || Qajax.defaults.headers,
-        noCacheUrlParam = ("ie" in settings ? settings.ie : Qajax.defaults.ie) && ((url.indexOf("?") === -1) ? "?" : "&") + "_=" + (new Date()).getTime() || "";
+        // TODO: remove Qajax.TIMEOUT before next major release
+        timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
+        headers = getOrElse("headers", settings),
+        noCacheUrlParam = getOrElse("ie", settings) && "_=" + (new Date()).getTime() || false;
+
+      // Let's build the url based on the configuration
+      // 1) Prepend the base if one
+      if (base) {
+        url = base + url;
+      }
+
+      // 2) Serialize and append the params if any
+      if (queryParams) {
+        url = url + (hasQuery(url) ? "?" : "&") + queryParams;
+      }
+
+      // 3) If enabled, append a unique token to the url to prevent IE hardcore caching
+      if (noCacheUrlParam) {
+        url = url + (hasQuery(url) ? "?" : "&") + noCacheUrlParam;
+      }
 
       // if data is a Javascript object, JSON is used
       if (data !== null && typeof data === "object") {
@@ -102,7 +151,7 @@
       };
 
       // Open the XHR
-      xhr.open(method, url + noCacheUrlParam, true);
+      xhr.open(method, url, true);
 
       // Add headers
       for (var h in headers) {
@@ -118,7 +167,7 @@
         xhr.send();
       }
 
-      // If no timeout, just retourn the promise
+      // If no timeout, just return the promise
       if (!timeout) {
         return xhrResult.promise;
       }
@@ -155,7 +204,9 @@
     // [string] The default HTTP method to apply when calling Qajax(url) 
     method: "GET",
     // [object] The default HTTP headers to apply to your requests
-    headers: {}
+    headers: {},
+    // [string] The base of all urls of your requests. Will be prepend to all urls.
+    base: ""
   };
 
   // Qajax.filterStatus
@@ -263,15 +314,7 @@
   // ---
   // Returns the serialized query **(string)**.
   //
-  Qajax.serialize = function (paramsObj) {
-    var k, params = [];
-    for (k in paramsObj) {
-      if (paramsObj.hasOwnProperty(k)) {
-        params.push(encodeURIComponent(k) + "=" + encodeURIComponent(paramsObj[k]));
-      }
-    }
-    return params.join("&");
-  };
+  Qajax.serialize = serializeQuery;
 
   // safe log function
   var log = function (msg) {
