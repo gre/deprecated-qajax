@@ -103,12 +103,15 @@
         url = settings.url,
         data = settings.data,
         params = settings.params || {},
-        queryParams = serializeQuery(params),
         xhrResult = Q.defer(),
         // TODO: remove Qajax.TIMEOUT before next major release
         timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
         headers = getOrElse("headers", settings),
-        noCacheUrlParam = getOrElse("ie", settings) && "_=" + (new Date()).getTime() || false;
+        ieParam = getOrElse("ie", settings);
+
+      if (ieParam) {
+        params[ieParam === true ? "_" : ieParam] = (new Date()).getTime();
+      }
 
       // Let's build the url based on the configuration
       // 1) Prepend the base if one
@@ -117,13 +120,9 @@
       }
 
       // 2) Serialize and append the params if any
+      var queryParams = serializeQuery(params);
       if (queryParams) {
         url = url + (hasQuery(url) ? "?" : "&") + queryParams;
-      }
-
-      // 3) If enabled, append a unique token to the url to prevent IE hardcore caching
-      if (noCacheUrlParam) {
-        url = url + (hasQuery(url) ? "?" : "&") + noCacheUrlParam;
       }
 
       // if data is a Javascript object, JSON is used
@@ -198,8 +197,10 @@
     // [number] The timeout, in ms, to apply to the request.
     // If no response after that delay, the promise will be failed
     timeout: 60000,
-    // [boolean] IE flag to enable a hack appending the current timestamp
+    // [boolean | string] IE flag to enable a hack appending the current timestamp
     // to your requests to prevent IE from caching them and always returning the same result.
+    // If "true", will set the param with the name "_"
+    // If a string, will use it as the param name
     ie: false,
     // [string] The default HTTP method to apply when calling Qajax(url) 
     method: "GET",
