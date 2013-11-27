@@ -20,6 +20,36 @@
 
   var CONTENT_TYPE = "Content-Type";
 
+  // Private util functions
+  // ===
+
+  // Get a param from the current settings of the request,
+  // if missing, try to return the "else" argument,
+  // if also missing, return it from the "defaults"
+  function getOrElse(paramName, settings, orElse) {
+    settings = settings || {};
+    if (orElse === undefined || orElse === null) {
+      orElse = Qajax.defaults[paramName];
+    }
+    return (paramName in settings ? settings[paramName] : orElse);
+  }
+
+  // Serialize a map of properties (as a JavaScript object) to a query string
+  function serializeQuery(paramsObj) {
+    var k, params = [];
+    for (k in paramsObj) {
+      if (paramsObj.hasOwnProperty(k)) {
+        params.push(encodeURIComponent(k) + "=" + encodeURIComponent(paramsObj[k]));
+      }
+    }
+    return params.join("&");
+  }
+
+  // Test if a given url has already a query string
+  function hasQuery(url) {
+    return (url.indexOf("?") === -1);
+  }
+
   // Qajax
   // ===
   // *Perform an asynchronous HTTP request (ajax).*
@@ -68,13 +98,32 @@
 
     return Q.fcall(function () { // Protect from any exception
       var xhr = settings.xhr || new XMLHttpRequest(),
-        method = settings.method || "GET",
+        method = getOrElse("method", settings),
+        base = getOrElse("base", settings),
         url = settings.url,
         data = settings.data,
-        timeout = settings.timeout || Qajax.TIMEOUT,
+        params = settings.params || {},
         xhrResult = Q.defer(),
-        headers = settings.headers || {},
-        noCacheUrlParam = ((url.indexOf("?") === -1) ? "?" : "&") + "_=" + (new Date()).getTime();
+        // TODO: remove Qajax.TIMEOUT before next major release
+        timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
+        headers = getOrElse("headers", settings),
+        ieParam = getOrElse("ie", settings);
+
+      if (ieParam) {
+        params[ieParam === true ? "_" : ieParam] = (new Date()).getTime();
+      }
+
+      // Let's build the url based on the configuration
+      // 1) Prepend the base if one
+      if (base) {
+        url = base + url;
+      }
+
+      // 2) Serialize and append the params if any
+      var queryParams = serializeQuery(params);
+      if (queryParams) {
+        url = url + (hasQuery(url) ? "?" : "&") + queryParams;
+      }
 
       // if data is a Javascript object, JSON is used
       if (data !== null && typeof data === "object") {
@@ -101,7 +150,7 @@
       };
 
       // Open the XHR
-      xhr.open(method, url + noCacheUrlParam, true);
+      xhr.open(method, url, true);
 
       // Add headers
       for (var h in headers) {
@@ -117,21 +166,49 @@
         xhr.send();
       }
 
-      // Either the xhr promise or the timeout is reached
-      return xhrResult.promise.timeout(timeout).fail(function (errorOrXHR) {
-        // If timeout has reached (Error is triggered)
-        if (errorOrXHR instanceof Error) {
-          log("Qajax request delay reach in " + method + " " + url);
-          xhr.abort(); // Abort this XHR so it can reject xhrResult
-        }
-        // Make the promise fail again.
-        throw xhr;
-      });
+      // If no timeout, just return the promise
+      if (!timeout) {
+        return xhrResult.promise;
+      }
+      // Else, either the xhr promise or the timeout is reached
+      else {
+        return xhrResult.promise.timeout(timeout).fail(function (errorOrXHR) {
+          // If timeout has reached (Error is triggered)
+          if (errorOrXHR instanceof Error) {
+            log("Qajax request delay reach in " + method + " " + url);
+            xhr.abort(); // Abort this XHR so it can reject xhrResult
+          }
+          // Make the promise fail again.
+          throw xhr;
+        });
+      }
     });
   };
 
+  // DEPRECATED. Use Qajax.defaults.timeout instead.
   // Default XMLHttpRequest timeout.
-  Qajax.TIMEOUT = 60000;
+  Qajax.TIMEOUT = undefined;
+
+  // Defaults settings of Qajax
+  // Feel free to override any of them.
+  Qajax.defaults = {
+    // [boolean] Flag to enable logs
+    logs: false,
+    // [number] The timeout, in ms, to apply to the request.
+    // If no response after that delay, the promise will be failed
+    timeout: 60000,
+    // [boolean | string] IE flag to enable a hack appending the current timestamp
+    // to your requests to prevent IE from caching them and always returning the same result.
+    // If "true", will set the param with the name "_"
+    // If a string, will use it as the param name
+    ie: false,
+    // [string] The default HTTP method to apply when calling Qajax(url) 
+    method: "GET",
+    // [object] The default HTTP headers to apply to your requests
+    headers: {},
+    // [string] The base of all urls of your requests. Will be prepend to all urls.
+    base: ""
+  };
 
   // Qajax.filterStatus
   // ===
@@ -238,19 +315,11 @@
   // ---
   // Returns the serialized query **(string)**.
   //
-  Qajax.serialize = function (paramsObj) {
-    var k, params = [];
-    for (k in paramsObj) {
-      if (paramsObj.hasOwnProperty(k)) {
-        params.push(encodeURIComponent(k) + "=" + encodeURIComponent(paramsObj[k]));
-      }
-    }
-    return params.join("&");
-  };
+  Qajax.serialize = serializeQuery;
 
   // safe log function
   var log = function (msg) {
-    if (window.console) {
+    if (Qajax.defaults.logs && window.console) {
       console.log(msg);
     }
   };
