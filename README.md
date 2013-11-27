@@ -177,6 +177,17 @@ Then run ```grunt```.
 Release Note
 ---
 
+0.1.5
+
+* Put global configuration variables in a `Qajax.defaults` Object.
+* Add more defaults:
+  * logs: Disable/Enable the logs
+  * ie: Disable/Enable the IE support
+  * timeout: Configure timeout for all requests
+  * header: Global headers for all requests
+  * base: A base url for all requests
+* timeout is now disabled when timeout is 0 (or null)
+
 0.1.4
 
 * AMD module compatibility

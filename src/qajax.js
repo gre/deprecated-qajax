@@ -71,6 +71,7 @@
   // - `data` **(any)** *optional*: the data to send.
   // - headers **(object)** *optional*: a map of headers to use for the XHR.
   // - `xhr` **(XMLHttpRequest)** *optional*: provide your own XMLHttpRequest.
+  // - **Or any other parameter from the Qajax.defaults**.
   //
   // Result
   // ---

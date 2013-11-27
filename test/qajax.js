@@ -1,4 +1,6 @@
 
+Qajax.defaults.ie = true;
+
 var sample01url = "/test/dataset/sample01.json";
 var sample01json = [
   { "name": "Jerome", "age": 20 },
@@ -12,8 +14,12 @@ function urlWithOptions (url, options) {
   return url+"?"+Qajax.serialize(options);
 }
 
-function checkNotSuccess (res) { console.log(res); throw "The result should never be successful!"; }
-function checkNotError (err) { console.log(err); throw "An error has been reached. "+err; }
+function log (o) {
+    if (window.console) console.log(o);
+}
+
+function checkNotSuccess (res) { log(res); throw "The result should never be successful!"; }
+function checkNotError (err) { log(err); throw "An error has been reached. "+err; }
 
 test("check the API needed for the test engine", function() {
   Qajax.defaults.timeout = 1000;
@@ -161,3 +167,49 @@ asyncTest("Qajax timeout can be overrided", function() {
     .then(checkSuccess, checkNotError)
     .fin(start);
 });
+
+asyncTest("Qajax timeout can be disabled", function() {
+  function checkSuccess (e) {
+    ok(true, "request has finished.");
+    equal(e.status, 200, "status is 200");
+  }
+  Qajax.defaults.timeout = 200;
+  Qajax({
+    method: "DELETE",
+    url: urlWithOptions(sample01url, { latency: 500 }),
+    timeout: 0
+  })
+    .then(checkSuccess, checkNotError)
+    .fin(start);
+});
+
+asyncTest("Qajax headers can be sent", function() {
+  Qajax({
+    headers: { "X-Hello": "world" },
+    method: "GET",
+    url: "/ECHO_HEADERS"
+  })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
+    .then(function (json) {
+        log(json);
+        equal(json["x-hello"], "world", "The custom X-Hello header has been successfully sent");
+    })
+    .fail(checkNotError)
+    .fin(start);
+});
+
+asyncTest("Qajax base url", function() {
+  Qajax("sample01.json", {
+      base: "/test/dataset/"
+  })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
+    .then(function (json) {
+        deepEqual(json, sample01json, "base url works");
+    })
+    .fail(checkNotError)
+    .fin(start);
+});
+
+

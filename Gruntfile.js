@@ -134,6 +134,12 @@ module.exports = function(grunt) {
       var url = URL.parse(req.url, true);
       var handle = (function () {
         var status = ("status" in url.query) ? parseInt(url.query.status, 10) : 200;
+        if (url.pathname == "/ECHO_HEADERS") {
+          return function () {
+            res.write(JSON.stringify(req.headers));
+            req.pipe(res);
+          };
+        }
         if (url.pathname == "/ECHO") {
           return function () {
             res.writeHead(status);
