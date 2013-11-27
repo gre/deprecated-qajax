@@ -104,7 +104,7 @@
         data = settings.data,
         params = settings.params || {},
         xhrResult = Q.defer(),
-        // TODO: remove Qajax.TIMEOUT before next major release
+        /* TODO: remove Qajax.TIMEOUT before next major release */
         timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
         headers = getOrElse("headers", settings),
         ieParam = getOrElse("ie", settings);
@@ -114,12 +114,12 @@
       }
 
       // Let's build the url based on the configuration
-      // 1) Prepend the base if one
+      // * Prepend the base if one
       if (base) {
         url = base + url;
       }
 
-      // 2) Serialize and append the params if any
+      // * Serialize and append the params if any
       var queryParams = serializeQuery(params);
       if (queryParams) {
         url = url + (hasQuery(url) ? "?" : "&") + queryParams;
@@ -185,28 +185,34 @@
     });
   };
 
-  // DEPRECATED. Use Qajax.defaults.timeout instead.
-  // Default XMLHttpRequest timeout.
+  /*
+   * DEPRECATED. Use Qajax.defaults.timeout instead.
+   * Default XMLHttpRequest timeout.
+   */
   Qajax.TIMEOUT = undefined;
 
-  // Defaults settings of Qajax
+  // Qajax Defaults
+  // ===
+
+  // Defaults settings of Qajax.
   // Feel free to override any of them.
+
   Qajax.defaults = {
-    // [boolean] Flag to enable logs
+    // `logs` **(boolean)**: Flag to enable logs
     logs: true,
-    // [number] The timeout, in ms, to apply to the request.
+    // `timeout` **(number)**: The timeout, in ms, to apply to the request.
     // If no response after that delay, the promise will be failed
     timeout: 60000,
-    // [boolean | string] IE flag to enable a hack appending the current timestamp
+    // `ie` **(boolean | string)**: IE flag to enable a hack appending the current timestamp
     // to your requests to prevent IE from caching them and always returning the same result.
     // If "true", will set the param with the name "_"
     // If a string, will use it as the param name
     ie: true,
-    // [string] The default HTTP method to apply when calling Qajax(url) 
+    // `method` **(string)**: The default HTTP method to apply when calling Qajax(url) 
     method: "GET",
-    // [object] The default HTTP headers to apply to your requests
+    // `header` **(object)**: The default HTTP headers to apply to your requests
     headers: {},
-    // [string] The base of all urls of your requests. Will be prepend to all urls.
+    // `base` **(string)**: The base of all urls of your requests. Will be prepend to all urls.
     base: ""
   };
 
@@ -224,9 +230,13 @@
   //
   // Usage example
   // ---
-  // `Qajax(settings).then(Qajax.filterStatus(200))`
+  // ```javascript
+  // Qajax(settings).then(Qajax.filterStatus(200))
   //
-  // `Qajax(settings).then(Qajax.filterStatus(function(s){ return s == 200 }))`
+  // Qajax(settings).then(
+  //    Qajax.filterStatus(function(s){ return s == 200 })
+  // )
+  // ```
   //
   Qajax.filterStatus = function (validStatus) {
     var check, typ;
@@ -277,7 +287,9 @@
   //
   // Usage example
   // ---
-  // `Qajax(settings).then(Qajax.toJSON)`
+  // ```
+  // Qajax(settings).then(Qajax.toJSON)
+  // ```
   //
   Qajax.toJSON = function (xhr) {
     return Q.fcall(function () {
