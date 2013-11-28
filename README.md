@@ -123,6 +123,16 @@ var lastYearYoungPeople =
 More advanced features
 ---
 
+* You can get **progress** event of the Ajax download. Exemple:
+
+```javascript
+Qajax("/download").progress(function (xhrProgressEvent) {
+  console.log(xhrProgressEvent);
+});
+```
+
+See also: https://dvcs.w3.org/hg/progress/raw-file/tip/Overview.html#progressevent
+
 * Qajax has a **timeout**:
 
 ```javascript
@@ -134,20 +144,20 @@ The default timeout is `Qajax.defaults.timeout` and can be overriden.
 
 * You can set XHR headers by giving the `header` options.
 
-* You can give your own `XMLHttpRequest` object to use!
+* You can give a `cancellation` Promise to abort an ajax request.
 
 Here is a typical use case:
 
 ```javascript
-var xhr = null;
+var cancellationD = null;
 function getResults (query) {
-  if (xhr) {
-    xhr.abort();
+  if (cancellationD) {
+    cancellationD.resolve();
   }
-  xhr = new XMLHttpRequest();
+  cancellationD = Q.defer();
   return Qajax({
     url: "/search?"+Qajax.serialize({ q: query }),
-    xhr: xhr
+    cancellation: cancellationD.promise
   })
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON);
@@ -183,6 +193,12 @@ Then run ```grunt```.
 
 Release Note
 ---
+
+0.1.6
+
+* Implement the `onprogress` XHR event support using the **progress** event of the returned Promise.
+* Introduce `cancellation` parameter. It allows to provide a "cancellation" promise which if fulfilled will cancel the current XHR.
+* Deprecate the `xhr` parameter: use `cancellation` instead.
 
 0.1.5
 
