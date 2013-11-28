@@ -275,22 +275,24 @@ asyncTest("'method' in defaults", function() {
 });
 
 
-asyncTest("Check that some Progress are made", function() {
-  resetDefaults();
-  function checkResult (res) {
-    deepEqual(res, sample01json, "sample01.json successfully retrieved.");
-  }
-  var p = 0;
-  function progress (xhr) {
-      console.log(xhr);
-      //ok(typeof (xhr.readyState) === "number", "object looks like a xhr");
-      ++ p;
-  }
-  function checkHadSomeProgress () {
-      ok(p>0, "There was some progress event triggered");
-  }
-  Qajax.getJSON(urlWithOptions(sample01url, { latency: 50 }))
-     .then(checkResult, checkNotError, progress)
-     .then(checkHadSomeProgress)
-     .fin(start);
-});
+
+// Well... IE does not support progress
+if ("onprogress" in (new XMLHttpRequest())) {
+    asyncTest("Check that some Progress are made", function() {
+      resetDefaults();
+      function checkResult (res) {
+        deepEqual(res, sample01json, "sample01.json successfully retrieved.");
+      }
+      var p = 0;
+      function progress () {
+          ++ p;
+      }
+      function checkHadSomeProgress () {
+          ok(p>0, "There was some progress event triggered");
+      }
+      Qajax.getJSON(urlWithOptions(sample01url, { latency: 50 }))
+         .then(checkResult, checkNotError, progress)
+         .then(checkHadSomeProgress)
+         .fin(start);
+    });
+}
