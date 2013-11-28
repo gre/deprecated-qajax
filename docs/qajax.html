@@ -228,23 +228,8 @@ if also missing, return it from the &quot;defaults&quot;</p>
     <span class="keyword">if</span> (!settings.url) {
       <span class="keyword">throw</span> <span class="string">"Qajax: settings.url is required"</span>;
     }
-
-    <span class="keyword">return</span> Q.fcall(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="comment">// Protect from any exception</span>
-      <span class="keyword">var</span> xhr = settings.xhr || <span class="keyword">new</span> XMLHttpRequest(),
-        method = getOrElse(<span class="string">"method"</span>, settings),
-        base = getOrElse(<span class="string">"base"</span>, settings),
-        url = settings.url,
-        data = settings.data,
-        params = settings.params || {},
-        xhrResult = Q.defer(),
-        <span class="comment">/* TODO: remove Qajax.TIMEOUT before next major release */</span>
-        timeout = getOrElse(<span class="string">"timeout"</span>, settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
-        headers = getOrElse(<span class="string">"headers"</span>, settings),
-        ieParam = getOrElse(<span class="string">"ie"</span>, settings);
-
-      <span class="keyword">if</span> (ieParam) {
-        params[ieParam === <span class="literal">true</span> ? <span class="string">"_"</span> : ieParam] = (<span class="keyword">new</span> Date()).getTime();
-      }</pre></div></div>
+    <span class="comment">/*
+</span></pre></div></div>
             
         </li>
         
@@ -255,16 +240,30 @@ if also missing, return it from the &quot;defaults&quot;</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>Let&#39;s build the url based on the configuration</p>
-<ul>
-<li>Prepend the base if one</li>
-</ul>
+              <p>About to be deprecated when fixing #7</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (base) {
-        url = base + url;
-      }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    if ("xhr" in settings) {
+        log("Qajax: xhr parameter is deprecated.");
+    }
+    */
+
+    var xhr = settings.xhr || new XMLHttpRequest(),
+      method = getOrElse("method", settings),
+      base = getOrElse("base", settings),
+      url = settings.url,
+      data = settings.data,
+      params = settings.params || {},
+      xhrResult = Q.defer(),
+      /* TODO: remove Qajax.TIMEOUT before next major release */
+      timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
+      headers = getOrElse("headers", settings),
+      ieParam = getOrElse("ie", settings);
+
+    if (ieParam) {
+      params[ieParam === true ? "_" : ieParam] = (new Date()).getTime();
+    }</pre></div></div>
             
         </li>
         
@@ -275,16 +274,16 @@ if also missing, return it from the &quot;defaults&quot;</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <ul>
-<li>Serialize and append the params if any</li>
+              <p>Let&#39;s build the url based on the configuration</p>
+<ul>
+<li>Prepend the base if one</li>
 </ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">var</span> queryParams = serializeQuery(params);
-      <span class="keyword">if</span> (queryParams) {
-        url = url + (hasQuery(url) ? <span class="string">"?"</span> : <span class="string">"&amp;"</span>) + queryParams;
-      }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (base) {
+      url = base + url;
+    }</pre></div></div>
             
         </li>
         
@@ -295,16 +294,16 @@ if also missing, return it from the &quot;defaults&quot;</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>if data is a Javascript object, JSON is used</p>
+              <ul>
+<li>Serialize and append the params if any</li>
+</ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (data !== <span class="literal">null</span> &amp;&amp; <span class="keyword">typeof</span> data === <span class="string">"object"</span>) {
-        <span class="keyword">if</span> (!(CONTENT_TYPE <span class="keyword">in</span> headers)) {
-          headers[CONTENT_TYPE] = <span class="string">"application/json"</span>;
-        }
-        data = JSON.stringify(data);
-      }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> queryParams = serializeQuery(params);
+    <span class="keyword">if</span> (queryParams) {
+      url = url + (hasQuery(url) ? <span class="string">"?"</span> : <span class="string">"&amp;"</span>) + queryParams;
+    }</pre></div></div>
             
         </li>
         
@@ -314,6 +313,28 @@ if also missing, return it from the &quot;defaults&quot;</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>if data is a Javascript object, JSON is used</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (data !== <span class="literal">null</span> &amp;&amp; <span class="keyword">typeof</span> data === <span class="string">"object"</span>) {
+      <span class="keyword">if</span> (!(CONTENT_TYPE <span class="keyword">in</span> headers)) {
+        headers[CONTENT_TYPE] = <span class="string">"application/json"</span>;
+      }
+      data = JSON.stringify(data);
+    }
+
+    <span class="keyword">return</span> Q.fcall(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span> <span class="comment">// Protect from any exception</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Bind the XHR finished callback</p>
 
@@ -337,11 +358,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>Open the XHR</p>
 
@@ -352,11 +373,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>Add headers</p>
 
@@ -371,11 +392,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Send the XHR</p>
 
@@ -390,11 +411,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>If no timeout, just return the promise</p>
 
@@ -407,11 +428,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>Else, either the xhr promise or the timeout is reached</p>
 
@@ -423,11 +444,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>If timeout has reached (Error is triggered)</p>
 
@@ -441,11 +462,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Make the promise fail again.</p>
 
@@ -466,11 +487,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <h1 id="qajax-defaults">Qajax Defaults</h1>
 
@@ -479,11 +500,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Defaults settings of Qajax.
 Feel free to override any of them.</p>
@@ -495,11 +516,11 @@ Feel free to override any of them.</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p><code>logs</code> <strong>(boolean)</strong>: Flag to enable logs</p>
 
@@ -510,11 +531,11 @@ Feel free to override any of them.</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p><code>timeout</code> <strong>(number)</strong>: The timeout, in ms, to apply to the request.
 If no response after that delay, the promise will be failed</p>
@@ -526,11 +547,11 @@ If no response after that delay, the promise will be failed</p>
         </li>
         
         
-        <li id="section-26">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p><code>ie</code> <strong>(boolean | string)</strong>: IE flag to enable a hack appending the current timestamp
 to your requests to prevent IE from caching them and always returning the same result.
@@ -544,11 +565,11 @@ If a string, will use it as the param name</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p><code>method</code> <strong>(string)</strong>: The default HTTP method to apply when calling Qajax(url) </p>
 
@@ -559,11 +580,11 @@ If a string, will use it as the param name</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p><code>header</code> <strong>(object)</strong>: The default HTTP headers to apply to your requests</p>
 
@@ -574,11 +595,11 @@ If a string, will use it as the param name</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p><code>base</code> <strong>(string)</strong>: The base of all urls of your requests. Will be prepend to all urls.</p>
 
@@ -590,27 +611,13 @@ If a string, will use it as the param name</p>
         </li>
         
         
-        <li id="section-30">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
-              </div>
-              <h1 id="qajax-filterstatus">Qajax.filterStatus</h1>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
-              <p><em>Filter an XHR to a given status, to consider only valid status to be success.</em></p>
-<h2 id="parameters">Parameters</h2>
+              <h1 id="qajax-filterstatus">Qajax.filterStatus</h1>
 
             </div>
             
@@ -623,8 +630,8 @@ If a string, will use it as the param name</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
-              <p><code>validStatus</code> <strong>(number or function)</strong>: either a http code (like 200) or a predicate function (statusCode).</p>
-<h2 id="result">Result</h2>
+              <p><em>Filter an XHR to a given status, to consider only valid status to be success.</em></p>
+<h2 id="parameters">Parameters</h2>
 
             </div>
             
@@ -637,8 +644,8 @@ If a string, will use it as the param name</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
-              <p>Returns a <strong>(function)</strong> returning a Promise of XHR considered successful (according to validStatus)</p>
-<h2 id="usage-example">Usage example</h2>
+              <p><code>validStatus</code> <strong>(number or function)</strong>: either a http code (like 200) or a predicate function (statusCode).</p>
+<h2 id="result">Result</h2>
 
             </div>
             
@@ -650,6 +657,20 @@ If a string, will use it as the param name</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Returns a <strong>(function)</strong> returning a Promise of XHR considered successful (according to validStatus)</p>
+<h2 id="usage-example">Usage example</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <pre><code class="lang-javascript">Qajax(settings).then(Qajax.filterStatus(200))
 
@@ -688,11 +709,11 @@ Qajax(settings).then(
         </li>
         
         
-        <li id="section-35">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <h1 id="qajax-filtersuccess">Qajax.filterSuccess</h1>
 
@@ -701,11 +722,11 @@ Qajax(settings).then(
         </li>
         
         
-        <li id="section-36">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p><em>Filter all Success status code case.</em>
 A good example of <code>Qajax.filterStatus</code> implementation.</p>
@@ -719,27 +740,13 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
         </li>
         
         
-        <li id="section-37">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
-              </div>
-              <h1 id="qajax-tojson">Qajax.toJSON</h1>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
-              <p><em>Extract a JSON from a XHR.</em></p>
-<h2 id="parameters">Parameters</h2>
+              <h1 id="qajax-tojson">Qajax.toJSON</h1>
 
             </div>
             
@@ -752,8 +759,8 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
-              <p><code>xhr</code> <strong>(XMLHttpRequest)</strong>: the XHR.</p>
-<h2 id="result">Result</h2>
+              <p><em>Extract a JSON from a XHR.</em></p>
+<h2 id="parameters">Parameters</h2>
 
             </div>
             
@@ -766,8 +773,8 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
-              <p>A <strong>(promise)</strong> of the parsed JSON.</p>
-<h2 id="usage-example">Usage example</h2>
+              <p><code>xhr</code> <strong>(XMLHttpRequest)</strong>: the XHR.</p>
+<h2 id="result">Result</h2>
 
             </div>
             
@@ -779,6 +786,20 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>A <strong>(promise)</strong> of the parsed JSON.</p>
+<h2 id="usage-example">Usage example</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-42">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <pre><code>Qajax(settings).then(Qajax.toJSON)</code></pre>
 
@@ -793,27 +814,13 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
         </li>
         
         
-        <li id="section-42">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
-              </div>
-              <h1 id="qajax-getjson">Qajax.getJSON</h1>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
-              <p><em>Get a JSON from an URL - shortcut to Qajax.</em></p>
-<h2 id="parameters">Parameters</h2>
+              <h1 id="qajax-getjson">Qajax.getJSON</h1>
 
             </div>
             
@@ -826,8 +833,8 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-44">&#182;</a>
               </div>
-              <p><code>url</code> <strong>(string)</strong>: the ressource to fetch.</p>
-<h2 id="result">Result</h2>
+              <p><em>Get a JSON from an URL - shortcut to Qajax.</em></p>
+<h2 id="parameters">Parameters</h2>
 
             </div>
             
@@ -839,6 +846,20 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-45">&#182;</a>
+              </div>
+              <p><code>url</code> <strong>(string)</strong>: the ressource to fetch.</p>
+<h2 id="result">Result</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-46">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>Returns a <strong>(promise)</strong> of a JS Object.</p>
 
@@ -853,27 +874,13 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
         </li>
         
         
-        <li id="section-46">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-46">&#182;</a>
-              </div>
-              <h1 id="qajax-serialize">Qajax.serialize</h1>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-47">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
-              <p><em>Make a query string from a JS Object.</em></p>
-<h2 id="parameters">Parameters</h2>
+              <h1 id="qajax-serialize">Qajax.serialize</h1>
 
             </div>
             
@@ -886,8 +893,8 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-48">&#182;</a>
               </div>
-              <p><code>paramsObj</code> <strong>(object)</strong> the params to serialize.</p>
-<h2 id="result">Result</h2>
+              <p><em>Make a query string from a JS Object.</em></p>
+<h2 id="parameters">Parameters</h2>
 
             </div>
             
@@ -900,11 +907,10 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
-              <p>Returns the serialized query <strong>(string)</strong>.</p>
+              <p><code>paramsObj</code> <strong>(object)</strong> the params to serialize.</p>
+<h2 id="result">Result</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>  Qajax.serialize = serializeQuery;</pre></div></div>
             
         </li>
         
@@ -914,6 +920,21 @@ A good example of <code>Qajax.filterStatus</code> implementation.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <p>Returns the serialized query <strong>(string)</strong>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  Qajax.serialize = serializeQuery;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
               </div>
               <p>safe log function</p>
 
