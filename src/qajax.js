@@ -159,6 +159,10 @@
         }
       };
 
+      xhr.onprogress = function (progress) {
+          xhrResult.notify(progress);
+      };
+
       // Open the XHR
       xhr.open(method, url, true);
 

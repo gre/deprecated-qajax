@@ -354,6 +354,10 @@ if also missing, return it from the &quot;defaults&quot;</p>
             xhrResult.reject(xhr); <span class="comment">// IE could throw an error</span>
           }
         }
+      };
+
+      xhr.onprogress = <span class="function"><span class="keyword">function</span> <span class="params">(progress)</span> {</span>
+          xhrResult.notify(progress);
       };</pre></div></div>
             
         </li>
