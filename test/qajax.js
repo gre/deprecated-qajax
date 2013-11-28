@@ -2,7 +2,7 @@
 function resetDefaults () {
     Qajax.defaults.logs = true;
     Qajax.defaults.timeout = 1000;
-    Qajax.defaults.ie = !!window.OLD_IE;
+    Qajax.defaults.ie = navigator.userAgent.toLowerCase().indexOf("msie") > -1;
     Qajax.defaults.method = "GET";
     Qajax.defaults.headers = {};
     Qajax.defaults.base = "";
@@ -211,7 +211,6 @@ asyncTest("headers", function() {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)
     .then(function (json) {
-        log(json);
         equal(json["x-hello"], "world", "The custom X-Hello header has been successfully sent");
     })
     .fail(checkNotError)
@@ -230,7 +229,6 @@ asyncTest("'headers' in defaults", function() {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)
     .then(function (json) {
-        log(json);
         equal(json["x-foo"], "bar", "The custom X-Foo header has been successfully sent");
     })
     .fail(checkNotError)
