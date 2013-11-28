@@ -211,6 +211,7 @@ asyncTest("headers", function() {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)
     .then(function (json) {
+        log(json);
         equal(json["x-hello"], "world", "The custom X-Hello header has been successfully sent");
     })
     .fail(checkNotError)
@@ -229,6 +230,7 @@ asyncTest("'headers' in defaults", function() {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)
     .then(function (json) {
+        log(json);
         equal(json["x-foo"], "bar", "The custom X-Foo header has been successfully sent");
     })
     .fail(checkNotError)

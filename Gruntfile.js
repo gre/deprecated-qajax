@@ -6,7 +6,7 @@ module.exports = function(grunt) {
         version: "8"
     },{
         browserName: "internet explorer",
-        platform: "Windows XP",
+        platform: "Windows 7",
         version: "9"
     },{
         browserName: "internet explorer",
@@ -183,7 +183,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['jshint', 'uglify', 'docco']);
-  grunt.registerTask('test-local', ['mock-server', "watch"]);
-  grunt.registerTask('test', ['mock-server', "saucelabs-qunit"]);
+  grunt.registerTask('test', ['mock-server', "watch"]);
+  grunt.registerTask('test-sauce', ['mock-server', "saucelabs-qunit"]);
 
 };
