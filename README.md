@@ -130,7 +130,7 @@ var p = Qajax("/", { timeout: 5000 });
 // p will be rejected if the server is not responding in 5 seconds.
 ```
 
-The default timeout is `Qajax.TIMEOUT` and can be overriden.
+The default timeout is `Qajax.defaults.timeout` and can be overriden.
 
 * You can set XHR headers by giving the `header` options.
 
@@ -158,6 +158,13 @@ function getResults (query) {
  * the previous xhr is aborted if still running so it let the latest query have the priority.
  */
 ```
+
+* More defaults:
+  * logs: Disable/Enable the logs
+  * ie: Disable/Enable the IE support
+  * header: Global headers for all requests
+  * base: A base url for all requests
+
 
 Tests
 ---
