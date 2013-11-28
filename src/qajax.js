@@ -70,7 +70,7 @@
   // - `timeout` **(number)** *optional*: the time in ms to reject the XHR if not terminated.
   // - `data` **(any)** *optional*: the data to send.
   // - headers **(object)** *optional*: a map of headers to use for the XHR.
-  // - `xhr` **(XMLHttpRequest)** *optional*: provide your own XMLHttpRequest.
+  // - `cancellation` **(Promise)** *optional*: provide a "cancellation" promise which if fulfilled will cancel the current XHR.
   // - **Or any other parameter from the Qajax.defaults**.
   //
   // Result
@@ -81,7 +81,7 @@
     var args = arguments, settings;
     /* Validating arguments */
     if (!args.length) {
-      throw "Qajax: settings are required";
+      throw new Error("Qajax: settings are required");
     }
     if (typeof args[0] === "string") {
       settings = (typeof args[1] === 'object' && args[1]) || {};
@@ -91,19 +91,21 @@
       settings = args[0];
     }
     else {
-      throw "Qajax: settings must be an object";
+      throw new Error("Qajax: settings must be an object");
     }
     if (!settings.url) {
-      throw "Qajax: settings.url is required";
+      throw new Error("Qajax: settings.url is required");
     }
-    /*
     // About to be deprecated when fixing #7
     if ("xhr" in settings) {
         log("Qajax: xhr parameter is deprecated.");
     }
-    */
+    if ("cancellation" in settings && !Q.isPromiseAlike(settings.cancellation)) {
+        throw new Error("cancellation must be a Promise.");
+    }
 
     var xhr = settings.xhr || new XMLHttpRequest(),
+      cancellation = settings.cancellation || Q.defer().promise, // default is a never ending promise
       method = getOrElse("method", settings),
       base = getOrElse("base", settings),
       url = settings.url,
@@ -173,6 +175,13 @@
       } else {
         xhr.send();
       }
+
+      cancellation.fin(function () {
+          if (!xhrResult.promise.isFulfilled()) {
+              log("Qajax cancellation reached.");
+              xhr.abort();
+          }
+      });
 
       // If no timeout, just return the promise
       if (!timeout) {

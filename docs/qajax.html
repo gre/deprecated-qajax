@@ -189,7 +189,7 @@ if also missing, return it from the &quot;defaults&quot;</p>
 <li><code>timeout</code> <strong>(number)</strong> <em>optional</em>: the time in ms to reject the XHR if not terminated.</li>
 <li><code>data</code> <strong>(any)</strong> <em>optional</em>: the data to send.</li>
 <li>headers <strong>(object)</strong> <em>optional</em>: a map of headers to use for the XHR.</li>
-<li><code>xhr</code> <strong>(XMLHttpRequest)</strong> <em>optional</em>: provide your own XMLHttpRequest.</li>
+<li><code>cancellation</code> <strong>(Promise)</strong> <em>optional</em>: provide a &quot;cancellation&quot; promise which if fulfilled will cancel the current XHR.</li>
 <li><strong>Or any other parameter from the Qajax.defaults</strong>.</li>
 </ul>
 <h2 id="result">Result</h2>
@@ -213,7 +213,7 @@ if also missing, return it from the &quot;defaults&quot;</p>
     <span class="keyword">var</span> args = arguments, settings;
     <span class="comment">/* Validating arguments */</span>
     <span class="keyword">if</span> (!args.length) {
-      <span class="keyword">throw</span> <span class="string">"Qajax: settings are required"</span>;
+      <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Qajax: settings are required"</span>);
     }
     <span class="keyword">if</span> (<span class="keyword">typeof</span> args[<span class="number">0</span>] === <span class="string">"string"</span>) {
       settings = (<span class="keyword">typeof</span> args[<span class="number">1</span>] === <span class="string">'object'</span> &amp;&amp; args[<span class="number">1</span>]) || {};
@@ -223,13 +223,11 @@ if also missing, return it from the &quot;defaults&quot;</p>
       settings = args[<span class="number">0</span>];
     }
     <span class="keyword">else</span> {
-      <span class="keyword">throw</span> <span class="string">"Qajax: settings must be an object"</span>;
+      <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Qajax: settings must be an object"</span>);
     }
     <span class="keyword">if</span> (!settings.url) {
-      <span class="keyword">throw</span> <span class="string">"Qajax: settings.url is required"</span>;
-    }
-    <span class="comment">/*
-</span></pre></div></div>
+      <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Qajax: settings.url is required"</span>);
+    }</pre></div></div>
             
         </li>
         
@@ -244,25 +242,28 @@ if also missing, return it from the &quot;defaults&quot;</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    if ("xhr" in settings) {
-        log("Qajax: xhr parameter is deprecated.");
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">if</span> (<span class="string">"xhr"</span> <span class="keyword">in</span> settings) {
+        log(<span class="string">"Qajax: xhr parameter is deprecated."</span>);
     }
-    */
+    <span class="keyword">if</span> (<span class="string">"cancellation"</span> <span class="keyword">in</span> settings &amp;&amp; !Q.isPromiseAlike(settings.cancellation)) {
+        <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"cancellation must be a Promise."</span>);
+    }
 
-    var xhr = settings.xhr || new XMLHttpRequest(),
-      method = getOrElse("method", settings),
-      base = getOrElse("base", settings),
+    <span class="keyword">var</span> xhr = settings.xhr || <span class="keyword">new</span> XMLHttpRequest(),
+      cancellation = settings.cancellation || Q.defer().promise, <span class="comment">// default is a never ending promise</span>
+      method = getOrElse(<span class="string">"method"</span>, settings),
+      base = getOrElse(<span class="string">"base"</span>, settings),
       url = settings.url,
       data = settings.data,
       params = settings.params || {},
       xhrResult = Q.defer(),
-      /* TODO: remove Qajax.TIMEOUT before next major release */
-      timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
-      headers = getOrElse("headers", settings),
-      ieParam = getOrElse("ie", settings);
+      <span class="comment">/* TODO: remove Qajax.TIMEOUT before next major release */</span>
+      timeout = getOrElse(<span class="string">"timeout"</span>, settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
+      headers = getOrElse(<span class="string">"headers"</span>, settings),
+      ieParam = getOrElse(<span class="string">"ie"</span>, settings);
 
-    if (ieParam) {
-      params[ieParam === true ? "_" : ieParam] = (new Date()).getTime();
+    <span class="keyword">if</span> (ieParam) {
+      params[ieParam === <span class="literal">true</span> ? <span class="string">"_"</span> : ieParam] = (<span class="keyword">new</span> Date()).getTime();
     }</pre></div></div>
             
         </li>
@@ -406,7 +407,14 @@ if also missing, return it from the &quot;defaults&quot;</p>
         xhr.send(data);
       } <span class="keyword">else</span> {
         xhr.send();
-      }</pre></div></div>
+      }
+
+      cancellation.fin(<span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+          <span class="keyword">if</span> (!xhrResult.promise.isFulfilled()) {
+              log(<span class="string">"Qajax cancellation reached."</span>);
+              xhr.abort();
+          }
+      });</pre></div></div>
             
         </li>
         

@@ -136,21 +136,22 @@ asyncTest("failure with 500", 2, function() {
      .fin(start);
 });
 
-asyncTest("an external XHR can be used and abort() manually", function() {
+asyncTest("a cancellation promise can be given and used to cancel the current XHR", function() {
   function checkError (e) {
     ok(true, "has error.");
     equal(e.readyState, 0, "readyState is 0 (the request has been abort)");
     notEqual(e.status, 200, "status is not 200");
   }
   resetDefaults();
-  var xhr = new XMLHttpRequest();
-  Qajax({ xhr: xhr, url: urlWithOptions(emptyUrl, { latency: 400 }) })
+  var cancellationD = Q.defer();
+  var cancellation = cancellationD.promise;
+  Qajax({ cancellation: cancellation, url: urlWithOptions(emptyUrl, { latency: 400 }) })
      .then(Qajax.filterSuccess)
      .then(Qajax.toJSON)
      .then(checkNotSuccess, checkError)
      .fin(start);
   setTimeout(function(){
-    xhr.abort();
+    cancellationD.resolve();
   }, 100);
 });
 
