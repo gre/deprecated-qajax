@@ -1,5 +1,12 @@
 
-Qajax.defaults.ie = true;
+function resetDefaults () {
+    Qajax.defaults.logs = true;
+    Qajax.defaults.timeout = 1000;
+    Qajax.defaults.ie = true;
+    Qajax.defaults.method = "GET";
+    Qajax.defaults.headers = {};
+    Qajax.defaults.base = "";
+}
 
 var sample01url = "/test/dataset/sample01.json";
 var sample01json = [
@@ -22,7 +29,7 @@ function checkNotSuccess (res) { log(res); throw "The result should never be suc
 function checkNotError (err) { log(err); throw "An error has been reached. "+err; }
 
 test("check the API needed for the test engine", function() {
-  Qajax.defaults.timeout = 1000;
+  resetDefaults();
   ok(typeof Qajax=="function", "Qajax exists");
   ok(typeof Qajax.filterStatus=="function", "filterStatus exists");
   ok(typeof Qajax.filterSuccess=="function", "filterSuccess exists");
@@ -31,6 +38,7 @@ test("check the API needed for the test engine", function() {
 });
 
 asyncTest("Qajax.getJSON successful", 1, function() {
+  resetDefaults();
   function checkResult (res) {
     deepEqual(res, sample01json, "sample01.json successfully retrieved.");
   }
@@ -40,6 +48,7 @@ asyncTest("Qajax.getJSON successful", 1, function() {
 });
 
 asyncTest("Qajax successful", 1, function() {
+  resetDefaults();
   function checkResult (res) {
     deepEqual(res, sample01json, "sample01.json successfully retrieved.");
   }
@@ -51,6 +60,7 @@ asyncTest("Qajax successful", 1, function() {
 });
 
 asyncTest("Qajax failure when 404 Not Found", 2, function() {
+  resetDefaults();
   function checkError (e) {
     ok(true, "has error.");
     equal(e.status, 404, "e is a XHR which has a 404 status.");
@@ -65,6 +75,7 @@ asyncTest("Qajax failure when 404 Not Found", 2, function() {
 
 
 asyncTest("data can be sent", function() {
+  resetDefaults();
   var data = "1234567890\nazerty\nuiopqsdfghjklm\nwxcvbn\n";
   function checkData (xhr) {
     ok(xhr.responseText, "has responseText");
@@ -81,6 +92,7 @@ asyncTest("data can be sent", function() {
 });
 
 asyncTest("json data can be sent", function() {
+  resetDefaults();
   var data = { foo: 123, bar: { value: 42 }, arr: [1, 2, 3] };
   function checkData (json) {
     deepEqual(json, data, "json is exactly the same data");
@@ -101,6 +113,7 @@ asyncTest("Qajax filter only 200 will make a 201 an error", 2, function() {
     ok(true, "has error.");
     equal(e.status, 201, "status is 201");
   }
+  resetDefaults();
   Qajax({ url: urlWithOptions(emptyUrl, { status: 201 }) })
      .then(Qajax.filterStatus(200))
      .then(checkNotSuccess, checkError)
@@ -112,6 +125,7 @@ asyncTest("Qajax failure with 500", 2, function() {
     ok(true, "has error.");
     equal(e.status, 500, "e is a XHR which has a 500 status.");
   }
+  resetDefaults();
   Qajax({
     method: "POST",
     url: urlWithOptions(emptyUrl, { status: 500 })
@@ -128,6 +142,7 @@ asyncTest("an external XHR can be used and abort() manually", function() {
     equal(e.readyState, 0, "readyState is 0 (the request has been abort)");
     notEqual(e.status, 200, "status is not 200");
   }
+  resetDefaults();
   var xhr = new XMLHttpRequest();
   Qajax({ xhr: xhr, url: urlWithOptions(emptyUrl, { latency: 400 }) })
      .then(Qajax.filterSuccess)
@@ -145,6 +160,7 @@ asyncTest("Qajax default timeout works", function() {
     equal(e.readyState, 0, "readyState is 0 (the request was never finished)");
     notEqual(e.status, 200, "status is not 200");
   }
+  resetDefaults();
   Qajax.defaults.timeout = 200;
   Qajax({
     method: "DELETE",
@@ -159,6 +175,7 @@ asyncTest("Qajax timeout can be overrided", function() {
     ok(true, "request has finished.");
     equal(e.status, 200, "status is 200");
   }
+  resetDefaults();
   Qajax({
     method: "POST",
     url: urlWithOptions(sample01url, { latency: 300 }),
@@ -173,6 +190,7 @@ asyncTest("Qajax timeout can be disabled", function() {
     ok(true, "request has finished.");
     equal(e.status, 200, "status is 200");
   }
+  resetDefaults();
   Qajax.defaults.timeout = 200;
   Qajax({
     method: "DELETE",
@@ -184,6 +202,7 @@ asyncTest("Qajax timeout can be disabled", function() {
 });
 
 asyncTest("Qajax headers can be sent", function() {
+  resetDefaults();
   Qajax({
     headers: { "X-Hello": "world" },
     method: "GET",
@@ -200,6 +219,7 @@ asyncTest("Qajax headers can be sent", function() {
 });
 
 asyncTest("Qajax base url", function() {
+  resetDefaults();
   Qajax("sample01.json", {
       base: "/test/dataset/"
   })

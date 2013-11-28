@@ -132,16 +132,22 @@ module.exports = function(grunt) {
     grunt.log.writeln('Starting server...');
     connect().use(function (req, res, next) {
       var url = URL.parse(req.url, true);
+      var closed = false;
+      req.once('close', function(){
+        closed = true;
+      });
       var handle = (function () {
         var status = ("status" in url.query) ? parseInt(url.query.status, 10) : 200;
         if (url.pathname == "/ECHO_HEADERS") {
           return function () {
+            if (closed) return;
             res.write(JSON.stringify(req.headers));
             req.pipe(res);
           };
         }
         if (url.pathname == "/ECHO") {
           return function () {
+            if (closed) return;
             res.writeHead(status);
             req.pipe(res);
           };
@@ -149,6 +155,7 @@ module.exports = function(grunt) {
         if (url.pathname.indexOf("/test/dataset/")===0) {
           req.method = "GET"; // next layer will behave like a GET so return the dataset content as a result.
           return function () {
+            if (closed) return;
             if (status != 200) {
               res.statusCode = status; // next layer will have this default statusCode for the response.
             }

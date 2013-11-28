@@ -96,43 +96,50 @@
     if (!settings.url) {
       throw "Qajax: settings.url is required";
     }
+    /*
+    // About to be deprecated when fixing #7
+    if ("xhr" in settings) {
+        log("Qajax: xhr parameter is deprecated.");
+    }
+    */
+
+    var xhr = settings.xhr || new XMLHttpRequest(),
+      method = getOrElse("method", settings),
+      base = getOrElse("base", settings),
+      url = settings.url,
+      data = settings.data,
+      params = settings.params || {},
+      xhrResult = Q.defer(),
+      /* TODO: remove Qajax.TIMEOUT before next major release */
+      timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
+      headers = getOrElse("headers", settings),
+      ieParam = getOrElse("ie", settings);
+
+    if (ieParam) {
+      params[ieParam === true ? "_" : ieParam] = (new Date()).getTime();
+    }
+
+    // Let's build the url based on the configuration
+    // * Prepend the base if one
+    if (base) {
+      url = base + url;
+    }
+
+    // * Serialize and append the params if any
+    var queryParams = serializeQuery(params);
+    if (queryParams) {
+      url = url + (hasQuery(url) ? "?" : "&") + queryParams;
+    }
+
+    // if data is a Javascript object, JSON is used
+    if (data !== null && typeof data === "object") {
+      if (!(CONTENT_TYPE in headers)) {
+        headers[CONTENT_TYPE] = "application/json";
+      }
+      data = JSON.stringify(data);
+    }
 
     return Q.fcall(function () { // Protect from any exception
-      var xhr = settings.xhr || new XMLHttpRequest(),
-        method = getOrElse("method", settings),
-        base = getOrElse("base", settings),
-        url = settings.url,
-        data = settings.data,
-        params = settings.params || {},
-        xhrResult = Q.defer(),
-        /* TODO: remove Qajax.TIMEOUT before next major release */
-        timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
-        headers = getOrElse("headers", settings),
-        ieParam = getOrElse("ie", settings);
-
-      if (ieParam) {
-        params[ieParam === true ? "_" : ieParam] = (new Date()).getTime();
-      }
-
-      // Let's build the url based on the configuration
-      // * Prepend the base if one
-      if (base) {
-        url = base + url;
-      }
-
-      // * Serialize and append the params if any
-      var queryParams = serializeQuery(params);
-      if (queryParams) {
-        url = url + (hasQuery(url) ? "?" : "&") + queryParams;
-      }
-
-      // if data is a Javascript object, JSON is used
-      if (data !== null && typeof data === "object") {
-        if (!(CONTENT_TYPE in headers)) {
-          headers[CONTENT_TYPE] = "application/json";
-        }
-        data = JSON.stringify(data);
-      }
 
       // Bind the XHR finished callback
       xhr.onreadystatechange = function () {
