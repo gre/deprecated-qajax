@@ -9,7 +9,7 @@ Supported browsers
 
 All browsers are supported (including IE).
 
-Current master is [![Build Status](https://travis-ci.org/gre/qajax.png)](https://travis-ci.org/gre/qajax)
+Current master state is: [![Test Status](https://saucelabs.com/buildstatus/qajax)](https://saucelabs.com/u/qajax)
 
 Installation
 ---
@@ -18,7 +18,7 @@ Installation
 
 ```json
 dependencies: {
-  "qajax": "0.2.0"
+  "qajax": "0.2.x"
 }
 ```
 
@@ -212,10 +212,11 @@ Development
 Install dev deps with ```npm install```.
 Then run ```grunt```.
 
-Release Note
+Release Notes
 ---
 
 **0.2.0**
+
 * Remove deprecated XHR and Qajax.TIMEOUT
 * Rename `ie` default to `cache`
 * Change defaults to more logical ones: `cache` is only true on `msie` and `logs` are now disabled by default.
