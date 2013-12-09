@@ -25,7 +25,7 @@ dependencies: {
 Links
 ---
 
-[Checkout the Annotated Source Code](http://greweb.me/qajax/docs/qajax.html)
+[Checkout the Annotated Source Code](http://greweb.me/qajax/docs/src/qajax.html)
 
 Usages and explanations
 ---
