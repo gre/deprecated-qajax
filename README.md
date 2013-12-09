@@ -215,7 +215,7 @@ Then run ```grunt```.
 Release Note
 ---
 
-**[future] 0.2.0**
+**0.2.0**
 * Remove deprecated XHR and Qajax.TIMEOUT
 * Rename `ie` default to `cache`
 * Change defaults to more logical ones: `cache` is only true on `msie` and `logs` are now disabled by default.
