@@ -64,7 +64,7 @@ asyncTest("failure when 404 Not Found", 2, function() {
     ok(true, "has error.");
     equal(e.status, 404, "e is a XHR which has a 404 status.");
   }
-  Qajax(urlWithOptions(emptyUrl, { status: 404 }))
+  Qajax(emptyUrl, { params: { status: 404 } })
      .then(Qajax.filterSuccess)
      .then(Qajax.toJSON)
      .then(checkNotSuccess, checkError)
@@ -113,7 +113,7 @@ asyncTest("filter only 200 will make a 201 an error", 2, function() {
     equal(e.status, 201, "status is 201");
   }
   resetDefaults();
-  Qajax({ url: urlWithOptions(emptyUrl, { status: 201 }) })
+  Qajax({ url: emptyUrl, params: { status: 201 } })
      .then(Qajax.filterStatus(200))
      .then(checkNotSuccess, checkError)
      .fin(start);
@@ -127,7 +127,8 @@ asyncTest("failure with 500", 2, function() {
   resetDefaults();
   Qajax({
     method: "POST",
-    url: urlWithOptions(emptyUrl, { status: 500 })
+    url: emptyUrl,
+    params: { status: 500 }
   })
      .then(Qajax.filterSuccess)
      .then(Qajax.toJSON)
@@ -164,7 +165,8 @@ asyncTest("'timeout' in defaults", function() {
   Qajax.defaults.timeout = 200;
   Qajax({
     method: "DELETE",
-    url: urlWithOptions(sample01url, { latency: 500 })
+    url: sample01url, 
+    params: { latency: 500 }
   })
     .then(checkNotSuccess, checkError)
     .fin(start);
@@ -178,7 +180,8 @@ asyncTest("timeout can be overrided", function() {
   resetDefaults();
   Qajax({
     method: "POST",
-    url: urlWithOptions(sample01url, { latency: 300 }),
+    url: sample01url,
+    params: { latency: 300 },
     timeout: 2000
   })
     .then(checkSuccess, checkNotError)
@@ -194,7 +197,8 @@ asyncTest("timeout can be disabled", function() {
   Qajax.defaults.timeout = 200;
   Qajax({
     method: "DELETE",
-    url: urlWithOptions(sample01url, { latency: 500 }),
+    url: sample01url,
+    params: { latency: 500 },
     timeout: 0
   })
     .then(checkSuccess, checkNotError)
