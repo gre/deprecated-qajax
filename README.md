@@ -215,6 +215,11 @@ Then run ```grunt```.
 Release Notes
 ---
 
+**0.2.1**
+
+* Bugfix: default cache to true also set for IE11.
+  * The cache bug is still present on IE11 but the defaults.cache was only setted true for IE<=10 because of the bad detection.
+
 **0.2.0**
 
 * Remove deprecated XHR and Qajax.TIMEOUT
