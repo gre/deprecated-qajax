@@ -68,7 +68,7 @@
       throw new Error("cancellation must be a Promise.");
     }
 
-    var xhr = settings.xhr || new XMLHttpRequest(),
+    var xhr = new XMLHttpRequest(),
       cancellation = settings.cancellation || Q.defer().promise, // default is a never ending promise
       method = getOrElse("method", settings),
       base = getOrElse("base", settings),

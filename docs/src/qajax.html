@@ -154,7 +154,7 @@
       <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"cancellation must be a Promise."</span>);
     }
 
-    <span class="keyword">var</span> xhr = settings.xhr || <span class="keyword">new</span> XMLHttpRequest(),
+    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest(),
       cancellation = settings.cancellation || Q.defer().promise, <span class="comment">// default is a never ending promise</span>
       method = getOrElse(<span class="string">"method"</span>, settings),
       base = getOrElse(<span class="string">"base"</span>, settings),
