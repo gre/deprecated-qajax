@@ -13,6 +13,10 @@ module.exports = function(grunt) {
         platform: "Windows 8",
         version: "10"
     },{
+        browserName: "internet explorer",
+        platform: "Windows 8.1",
+        version: "11"
+    },{
         browserName: "opera",
         platform: "Windows 7",
         version: "12"
@@ -30,8 +34,20 @@ module.exports = function(grunt) {
         platform: "Windows XP"
     },{
         browserName: "firefox",
+        platform: "linux",
+        version: "25"
+    },{
+        browserName: "firefox",
         platform: "Windows 8",
-        version: "21"
+        version: "25"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "24"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "22"
     },{
         browserName: "firefox",
         platform: "Windows 8",
@@ -39,19 +55,19 @@ module.exports = function(grunt) {
     },{
         browserName: "firefox",
         platform: "Windows 8",
-        version: "19"
-    },{
-        browserName: "firefox",
-        platform: "Windows 8",
-        version: "18"
-    },{
-        browserName: "firefox",
-        platform: "Windows 8",
-        version: "17"
-    },{
-        browserName: "firefox",
-        platform: "Windows 8",
         version: "16"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "10"
+    },{
+        browserName: "firefox",
+        platform: "Windows 8",
+        version: "4"
+    },{
+        browserName:"iphone",
+        platform: "OS X 10.8",
+        version: "6.1"
     },{
         browserName:"iphone",
         platform: "OS X 10.8",
