@@ -59,7 +59,7 @@ module.exports = function(grunt) {
     },{
         browserName: "firefox",
         platform: "Windows 8",
-        version: "5"
+        version: "8"
     },{
         browserName:"iphone",
         platform: "OS X 10.8",
