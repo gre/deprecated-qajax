@@ -220,7 +220,7 @@
 
   Qajax.defaults = {
     // `logs` **(boolean)**: Flag to enable logs
-    logs: true,
+    logs: false,
     // `timeout` **(number)**: The timeout, in ms, to apply to the request.
     // If no response after that delay, the promise will be failed
     timeout: 60000,
@@ -228,7 +228,7 @@
     // to your requests to prevent IE from caching them and always returning the same result.
     // If "true", will set the param with the name "_"
     // If a string, will use it as the param name
-    ie: true,
+    ie: window.navigator.userAgent.toLowerCase().indexOf("msie") > -1,
     // `method` **(string)**: The default HTTP method to apply when calling Qajax(url) 
     method: "GET",
     // `header` **(object)**: The default HTTP headers to apply to your requests
