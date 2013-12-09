@@ -26,12 +26,8 @@
   // Get a param from the current settings of the request,
   // if missing, try to return the "else" argument,
   // if also missing, return it from the "defaults"
-  function getOrElse(paramName, settings, orElse) {
-    settings = settings || {};
-    if (orElse === undefined || orElse === null) {
-      orElse = Qajax.defaults[paramName];
-    }
-    return (paramName in settings ? settings[paramName] : orElse);
+  function getOrElse(paramName, settings) {
+    return paramName in settings ? settings[paramName] : Qajax.defaults[paramName];
   }
 
   // Serialize a map of properties (as a JavaScript object) to a query string
@@ -96,10 +92,6 @@
     if (!settings.url) {
       throw new Error("Qajax: settings.url is required");
     }
-    // About to be deprecated when fixing #7
-    if ("xhr" in settings) {
-        log("Qajax: xhr parameter is deprecated.");
-    }
     if ("cancellation" in settings && !Q.isPromiseAlike(settings.cancellation)) {
         throw new Error("cancellation must be a Promise.");
     }
@@ -112,8 +104,7 @@
       data = settings.data,
       params = settings.params || {},
       xhrResult = Q.defer(),
-      /* TODO: remove Qajax.TIMEOUT before next major release */
-      timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
+      timeout = getOrElse("timeout", settings),
       headers = getOrElse("headers", settings),
       cacheParam = getOrElse("cache", settings);
 
