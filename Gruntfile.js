@@ -113,9 +113,7 @@ module.exports = function(grunt) {
     docco: {
       all: {
         src: ['src/*.js'],
-        options: {
-          output: 'docs/'
-        }
+        dest: 'docs/'
       }
     },
     watch: {
@@ -144,7 +142,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-docco');
+  grunt.loadNpmTasks('grunt-docco2');
   grunt.loadNpmTasks('grunt-saucelabs');
 
   grunt.registerTask('mock-server', 'Start a mock server to test Qajax.', function() {
@@ -198,9 +196,8 @@ module.exports = function(grunt) {
     .listen(9999);
   });
 
+  grunt.registerTask('default', ['compile', 'mock-server', 'watch']);
   grunt.registerTask('compile', ['jshint', 'uglify', 'docco']);
-  grunt.registerTask('default', ['compile', 'watch']);
-  grunt.registerTask('test', ['mock-server', "watch"]);
-  grunt.registerTask('test-sauce', ['mock-server', "saucelabs-qunit"]);
+  grunt.registerTask('test-sauce', ['mock-server', 'saucelabs-qunit']);
 
 };

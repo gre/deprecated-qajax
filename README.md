@@ -204,7 +204,7 @@ The library is stress-tested with `qunit` and a mock node.js server which test d
 
 [![SauceLabs Status](https://saucelabs.com/browser-matrix/qajax.svg)](https://saucelabs.com/u/qajax)
 
-Test locally: `grunt test` and go to `http://localhost:9999/test/`.
+Test locally: `grunt` and go to `http://localhost:9999/test/`.
 
 Development
 ---
