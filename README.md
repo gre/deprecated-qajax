@@ -221,6 +221,7 @@ Release Note
 * Change defaults to more logical ones: `cache` is only true on `msie` and `logs` are now disabled by default.
 * Add tests for the `params` option
 * Update some docs
+* Bugfix: The headers object was not copied and had a side-effect in `Qajax.defaults.headers`
 
 **0.1.6**
 

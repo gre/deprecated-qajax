@@ -151,7 +151,7 @@
       <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Qajax: settings.url is required"</span>);
     }
     <span class="keyword">if</span> (<span class="string">"cancellation"</span> <span class="keyword">in</span> settings &amp;&amp; !Q.isPromiseAlike(settings.cancellation)) {
-        <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"cancellation must be a Promise."</span>);
+      <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"cancellation must be a Promise."</span>);
     }
 
     <span class="keyword">var</span> xhr = settings.xhr || <span class="keyword">new</span> XMLHttpRequest(),
@@ -163,7 +163,7 @@
       params = settings.params || {},
       xhrResult = Q.defer(),
       timeout = getOrElse(<span class="string">"timeout"</span>, settings),
-      headers = getOrElse(<span class="string">"headers"</span>, settings),
+      headers = extend1({}, getOrElse(<span class="string">"headers"</span>, settings)),
       cacheParam = getOrElse(<span class="string">"cache"</span>, settings);
 
     <span class="keyword">if</span> (cacheParam) {
@@ -898,6 +898,15 @@ if also missing, return it from the “defaults”</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">function</span> <span class="title">getOrElse</span><span class="params">(paramName, settings)</span> {</span>
     <span class="keyword">return</span> paramName <span class="keyword">in</span> settings ? settings[paramName] : Qajax.defaults[paramName];
+  }
+
+  <span class="function"><span class="keyword">function</span> <span class="title">extend1</span> <span class="params">(extendee, object)</span> {</span>
+    <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> object) {
+      <span class="keyword">if</span> (object.hasOwnProperty(key)) {
+        extendee[key] = object[key];
+      }
+    }
+    <span class="keyword">return</span> extendee;
   }</pre></div></div>
             
         </li>

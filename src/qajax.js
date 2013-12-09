@@ -65,7 +65,7 @@
       throw new Error("Qajax: settings.url is required");
     }
     if ("cancellation" in settings && !Q.isPromiseAlike(settings.cancellation)) {
-        throw new Error("cancellation must be a Promise.");
+      throw new Error("cancellation must be a Promise.");
     }
 
     var xhr = settings.xhr || new XMLHttpRequest(),
@@ -77,7 +77,7 @@
       params = settings.params || {},
       xhrResult = Q.defer(),
       timeout = getOrElse("timeout", settings),
-      headers = getOrElse("headers", settings),
+      headers = extend1({}, getOrElse("headers", settings)),
       cacheParam = getOrElse("cache", settings);
 
     if (cacheParam) {
@@ -321,6 +321,15 @@
   // if also missing, return it from the "defaults"
   function getOrElse(paramName, settings) {
     return paramName in settings ? settings[paramName] : Qajax.defaults[paramName];
+  }
+
+  function extend1 (extendee, object) {
+    for (var key in object) {
+      if (object.hasOwnProperty(key)) {
+        extendee[key] = object[key];
+      }
+    }
+    return extendee;
   }
 
   // Serialize a map of properties (as a JavaScript object) to a query string
