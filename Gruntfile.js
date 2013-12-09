@@ -34,11 +34,11 @@ module.exports = function(grunt) {
         platform: "Windows XP"
     },{
         browserName: "firefox",
-        platform: "Windows 8",
+        platform: "OS X 10.6",
         version: "25"
     },{
         browserName: "firefox",
-        platform: "Windows 8",
+        platform: "OS X 10.6",
         version: "24"
     },{
         browserName: "firefox",
