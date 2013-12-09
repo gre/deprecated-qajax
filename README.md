@@ -9,16 +9,18 @@ Supported browsers
 
 All browsers are supported (including IE).
 
-[![SauceLabs Status](https://saucelabs.com/browser-matrix/qajax.svg)](https://saucelabs.com/u/qajax)
+Current master is [![Build Status](https://travis-ci.org/gre/qajax.png)](https://travis-ci.org/gre/qajax)
 
 Installation
 ---
 
-```sh
-bower install qajax
-```
+**Qajax** is a [NPM package](https://npmjs.org/package/qajax).
 
-Also available on [NPM](https://npmjs.org/package/qajax).
+```json
+dependencies: {
+  "qajax": "0.2.0"
+}
+```
 
 Links
 ---
@@ -120,6 +122,21 @@ var lastYearYoungPeople =
   // will get from: "/people.json?from=2012-01-01&to=2013-01-01&age%24lt=18"
 ```
 
+But alternatively, and more simply you can give a "params" object:
+
+```javascript
+var lastYearYoungPeople = 
+  Qajax({
+    url: "/people.json",
+    // This params object will be serialized in the URL
+    params: {
+      from: "2012-01-01",
+      to: "2013-01-01",
+      "age$lt": 18
+    }
+  }).then(Qajax.filterSuccess).then(Qajax.toJSON);
+```
+
 More advanced features
 ---
 
@@ -143,6 +160,10 @@ var p = Qajax("/", { timeout: 5000 });
 The default timeout is `Qajax.defaults.timeout` and can be overriden.
 
 * You can set XHR headers by giving the `header` options.
+
+```javascript
+var p = Qajax({ url: "/", headers: { "X-Foo": "bar" } });
+```
 
 * You can give a `cancellation` Promise to abort an ajax request.
 
@@ -183,7 +204,7 @@ The library is stress-tested with `qunit` and a mock node.js server which test d
 
 [![SauceLabs Status](https://saucelabs.com/browser-matrix/qajax.svg)](https://saucelabs.com/u/qajax)
 
-Test locally: `grunt test-local` and go to `http://localhost:9999/test/`.
+Test locally: `grunt test` and go to `http://localhost:9999/test/`.
 
 Development
 ---
@@ -194,13 +215,20 @@ Then run ```grunt```.
 Release Note
 ---
 
-0.1.6
+**[future] 0.2.0**
+* Remove deprecated XHR and Qajax.TIMEOUT
+* Rename `ie` default to `cache`
+* Change defaults to more logical ones: `cache` is only true on `msie` and `logs` are now disabled by default.
+* Add tests for the `params` option
+* Update some docs
+
+**0.1.6**
 
 * Implement the `onprogress` XHR event support using the **progress** event of the returned Promise.
 * Introduce `cancellation` parameter. It allows to provide a "cancellation" promise which if fulfilled will cancel the current XHR.
 * Deprecate the `xhr` parameter: use `cancellation` instead.
 
-0.1.5
+**0.1.5**
 
 * Put global configuration variables in a `Qajax.defaults` Object.
 * Add more defaults:
@@ -211,22 +239,22 @@ Release Note
   * base: A base url for all requests
 * timeout is now disabled when timeout is 0 (or null)
 
-0.1.4
+**0.1.4**
 
 * AMD module compatibility
 
-0.1.3
+**0.1.3**
 
 * Add new signature `Qajax(url, settings)` + validation
 
-0.1.2
+**0.1.2**
 
 * Using require('q') properly
 
-0.1.1
+**0.1.1**
 
 * Fix CommonJS compatibility
 
-0.1.0
+**0.1.0**
 
 * Initial release with Qajax, filterStatus, filterSuccess, toJSON, getJSON, serialize

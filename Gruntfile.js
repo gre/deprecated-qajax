@@ -121,7 +121,7 @@ module.exports = function(grunt) {
     watch: {
       all: {
         files: ['src/*.js'],
-        tasks: ['default']
+        tasks: ['compile']
       }
     },
     'saucelabs-qunit': {
@@ -198,7 +198,8 @@ module.exports = function(grunt) {
     .listen(9999);
   });
 
-  grunt.registerTask('default', ['jshint', 'uglify', 'docco']);
+  grunt.registerTask('compile', ['jshint', 'uglify', 'docco']);
+  grunt.registerTask('default', ['compile', 'watch']);
   grunt.registerTask('test', ['mock-server', "watch"]);
   grunt.registerTask('test-sauce', ['mock-server', "saucelabs-qunit"]);
 

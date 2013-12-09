@@ -18,34 +18,6 @@
 })(function (Q) {
   "use strict";
 
-  var CONTENT_TYPE = "Content-Type";
-
-  // Private util functions
-  // ===
-
-  // Get a param from the current settings of the request,
-  // if missing, try to return the "else" argument,
-  // if also missing, return it from the "defaults"
-  function getOrElse(paramName, settings) {
-    return paramName in settings ? settings[paramName] : Qajax.defaults[paramName];
-  }
-
-  // Serialize a map of properties (as a JavaScript object) to a query string
-  function serializeQuery(paramsObj) {
-    var k, params = [];
-    for (k in paramsObj) {
-      if (paramsObj.hasOwnProperty(k)) {
-        params.push(encodeURIComponent(k) + "=" + encodeURIComponent(paramsObj[k]));
-      }
-    }
-    return params.join("&");
-  }
-
-  // Test if a given url has already a query string
-  function hasQuery(url) {
-    return (url.indexOf("?") === -1);
-  }
-
   // Qajax
   // ===
   // *Perform an asynchronous HTTP request (ajax).*
@@ -341,12 +313,40 @@
   //
   Qajax.serialize = serializeQuery;
 
+  // Private util functions
+  // ===
+
+  // Get a param from the current settings of the request,
+  // if missing, try to return the "else" argument,
+  // if also missing, return it from the "defaults"
+  function getOrElse(paramName, settings) {
+    return paramName in settings ? settings[paramName] : Qajax.defaults[paramName];
+  }
+
+  // Serialize a map of properties (as a JavaScript object) to a query string
+  function serializeQuery(paramsObj) {
+    var k, params = [];
+    for (k in paramsObj) {
+      if (paramsObj.hasOwnProperty(k)) {
+        params.push(encodeURIComponent(k) + "=" + encodeURIComponent(paramsObj[k]));
+      }
+    }
+    return params.join("&");
+  }
+
+  // Test if a given url has already a query string
+  function hasQuery(url) {
+    return (url.indexOf("?") === -1);
+  }
+
   // safe log function
-  var log = function (msg) {
+  function log (msg) {
     if (Qajax.defaults.logs && window.console) {
       console.log(msg);
     }
-  };
+  }
+
+  var CONTENT_TYPE = "Content-Type";
 
   return Qajax;
 
