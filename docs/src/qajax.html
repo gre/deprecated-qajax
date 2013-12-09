@@ -489,7 +489,7 @@ If a string, will use it as the param name</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    cache: window.navigator.userAgent.toLowerCase().indexOf(<span class="string">"msie"</span>) &gt; -<span class="number">1</span>,</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    cache: window.ActiveXObject || <span class="string">"ActiveXObject"</span> <span class="keyword">in</span> window,</pre></div></div>
             
         </li>
         
