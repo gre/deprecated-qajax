@@ -260,10 +260,10 @@ if also missing, return it from the &quot;defaults&quot;</p>
       <span class="comment">/* TODO: remove Qajax.TIMEOUT before next major release */</span>
       timeout = getOrElse(<span class="string">"timeout"</span>, settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
       headers = getOrElse(<span class="string">"headers"</span>, settings),
-      ieParam = getOrElse(<span class="string">"ie"</span>, settings);
+      cacheParam = getOrElse(<span class="string">"cache"</span>, settings);
 
-    <span class="keyword">if</span> (ieParam) {
-      params[ieParam === <span class="literal">true</span> ? <span class="string">"_"</span> : ieParam] = (<span class="keyword">new</span> Date()).getTime();
+    <span class="keyword">if</span> (cacheParam) {
+      params[cacheParam === <span class="literal">true</span> ? <span class="string">"_"</span> : cacheParam] = (<span class="keyword">new</span> Date()).getTime();
     }</pre></div></div>
             
         </li>
@@ -565,14 +565,14 @@ If no response after that delay, the promise will be failed</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
-              <p><code>ie</code> <strong>(boolean | string)</strong>: IE flag to enable a hack appending the current timestamp
+              <p><code>cache</code> <strong>(boolean | string)</strong>: cache flag to enable a hack appending the current timestamp
 to your requests to prevent IE from caching them and always returning the same result.
 If &quot;true&quot;, will set the param with the name &quot;_&quot;
 If a string, will use it as the param name</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    ie: window.navigator.userAgent.toLowerCase().indexOf(<span class="string">"msie"</span>) &gt; -<span class="number">1</span>,</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    cache: window.navigator.userAgent.toLowerCase().indexOf(<span class="string">"msie"</span>) &gt; -<span class="number">1</span>,</pre></div></div>
             
         </li>
         

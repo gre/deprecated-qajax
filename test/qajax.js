@@ -2,7 +2,6 @@
 function resetDefaults () {
     Qajax.defaults.logs = true;
     Qajax.defaults.timeout = 1000;
-    Qajax.defaults.ie = navigator.userAgent.toLowerCase().indexOf("msie") > -1;
     Qajax.defaults.method = "GET";
     Qajax.defaults.headers = {};
     Qajax.defaults.base = "";

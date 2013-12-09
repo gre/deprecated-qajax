@@ -115,10 +115,10 @@
       /* TODO: remove Qajax.TIMEOUT before next major release */
       timeout = getOrElse("timeout", settings, Qajax.TIMEOUT || Qajax.defaults.timeout),
       headers = getOrElse("headers", settings),
-      ieParam = getOrElse("ie", settings);
+      cacheParam = getOrElse("cache", settings);
 
-    if (ieParam) {
-      params[ieParam === true ? "_" : ieParam] = (new Date()).getTime();
+    if (cacheParam) {
+      params[cacheParam === true ? "_" : cacheParam] = (new Date()).getTime();
     }
 
     // Let's build the url based on the configuration
@@ -224,11 +224,11 @@
     // `timeout` **(number)**: The timeout, in ms, to apply to the request.
     // If no response after that delay, the promise will be failed
     timeout: 60000,
-    // `ie` **(boolean | string)**: IE flag to enable a hack appending the current timestamp
+    // `cache` **(boolean | string)**: cache flag to enable a hack appending the current timestamp
     // to your requests to prevent IE from caching them and always returning the same result.
     // If "true", will set the param with the name "_"
     // If a string, will use it as the param name
-    ie: window.navigator.userAgent.toLowerCase().indexOf("msie") > -1,
+    cache: window.navigator.userAgent.toLowerCase().indexOf("msie") > -1,
     // `method` **(string)**: The default HTTP method to apply when calling Qajax(url) 
     method: "GET",
     // `header` **(object)**: The default HTTP headers to apply to your requests
