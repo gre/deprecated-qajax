@@ -221,6 +221,22 @@ asyncTest("headers", function() {
     .fin(start);
 });
 
+asyncTest("another headers", function() {
+  resetDefaults();
+  Qajax({
+    headers: { "X-Hi": "world" },
+    method: "GET",
+    url: "/ECHO_HEADERS"
+  })
+    .then(Qajax.filterSuccess)
+    .then(Qajax.toJSON)
+    .then(function (json) {
+        equal(json["x-hi"], "world", "The custom X-Hi header has been successfully sent");
+    })
+    .fail(checkNotError)
+    .fin(start);
+});
+
 asyncTest("'headers' in defaults", function() {
   resetDefaults();
   Qajax.defaults.headers = {
