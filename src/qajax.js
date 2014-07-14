@@ -38,6 +38,7 @@
   // - `timeout` **(number)** *optional*: the time in ms to reject the XHR if not terminated.
   // - `data` **(any)** *optional*: the data to send.
   // - headers **(object)** *optional*: a map of headers to use for the XHR.
+  // - `responseType` **(string)** *optional*: a responseType to set the XHR with.
   // - `cancellation` **(Promise)** *optional*: provide a "cancellation" promise which if fulfilled will cancel the current XHR.
   // - **Or any other parameter from the Qajax.defaults**.
   //
@@ -74,11 +75,16 @@
       base = getOrElse("base", settings),
       url = settings.url,
       data = settings.data,
+      responseType = settings.responseType,
       params = settings.params || {},
       xhrResult = Q.defer(),
       timeout = getOrElse("timeout", settings),
       headers = extend1({}, getOrElse("headers", settings)),
       cacheParam = getOrElse("cache", settings);
+
+    if (responseType) {
+      xhr.responseType = responseType;
+    }
 
     if (cacheParam) {
       params[cacheParam === true ? "_" : cacheParam] = (new Date()).getTime();
