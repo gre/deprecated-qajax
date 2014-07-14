@@ -82,10 +82,6 @@
       headers = extend1({}, getOrElse("headers", settings)),
       cacheParam = getOrElse("cache", settings);
 
-    if (responseType) {
-      xhr.responseType = responseType;
-    }
-
     if (cacheParam) {
       params[cacheParam === true ? "_" : cacheParam] = (new Date()).getTime();
     }
@@ -134,6 +130,10 @@
 
       // Open the XHR
       xhr.open(method, url, true);
+
+      if (responseType) {
+        xhr.responseType = responseType;
+      }
 
       // Add headers
       for (var h in headers) {

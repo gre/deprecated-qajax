@@ -168,10 +168,6 @@
       headers = extend1({}, getOrElse(<span class="hljs-string">"headers"</span>, settings)),
       cacheParam = getOrElse(<span class="hljs-string">"cache"</span>, settings);
 
-    <span class="hljs-keyword">if</span> (responseType) {
-      xhr.responseType = responseType;
-    }
-
     <span class="hljs-keyword">if</span> (cacheParam) {
       params[cacheParam === <span class="hljs-literal">true</span> ? <span class="hljs-string">"_"</span> : cacheParam] = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
     }</pre></div></div>
@@ -283,7 +279,11 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      xhr.open(method, url, <span class="hljs-literal">true</span>);</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      xhr.open(method, url, <span class="hljs-literal">true</span>);
+
+      <span class="hljs-keyword">if</span> (responseType) {
+        xhr.responseType = responseType;
+      }</pre></div></div>
             
         </li>
         
