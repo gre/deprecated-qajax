@@ -197,7 +197,7 @@
     // to your requests to prevent IE from caching them and always returning the same result.
     // If "true", will set the param with the name "_"
     // If a string, will use it as the param name
-    cache: window.ActiveXObject || "ActiveXObject" in window,
+    cache: !!(window.ActiveXObject || "ActiveXObject" in window),
     // `method` **(string)**: The default HTTP method to apply when calling Qajax(url) 
     method: "GET",
     // `header` **(object)**: The default HTTP headers to apply to your requests
