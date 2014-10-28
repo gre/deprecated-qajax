@@ -3,17 +3,14 @@
  */
 /*jslint newcap: true */
 (function (definition) {
-  var Q;
   if (typeof exports === "object") {
-    Q = require("q");
-    module.exports = definition(Q);
+    module.exports = definition(require("q"));
   }
   else if (typeof define === 'function' && define.amd){
     define(['q'], definition);
   }
   else {
-    Q = window.Q;
-    window.Qajax = definition(Q);
+    Qajax = definition(Q);
   }
 })(function (Q) {
   "use strict";
