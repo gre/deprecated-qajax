@@ -165,6 +165,12 @@ The default timeout is `Qajax.defaults.timeout` and can be overriden.
 var p = Qajax({ url: "/", headers: { "X-Foo": "bar" } });
 ```
 
+* You can set withCredentials attribute for [CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing), see also: https://xhr.spec.whatwg.org/#the-withcredentials-attribute.
+
+```javascript
+var p = Qajax({ url: "http://another-domain.com/", withCredentials: true });
+```
+
 * You can give a `cancellation` Promise to abort an ajax request.
 
 Here is a typical use case:

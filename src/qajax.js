@@ -36,6 +36,7 @@
   // - `data` **(any)** *optional*: the data to send.
   // - headers **(object)** *optional*: a map of headers to use for the XHR.
   // - `responseType` **(string)** *optional*: a responseType to set the XHR with.
+  // - `withCredentials` **(boolean)** *optional*: set the XHR withCredentials attribute *(default: false)*.
   // - `cancellation` **(Promise)** *optional*: provide a "cancellation" promise which if fulfilled will cancel the current XHR.
   // - **Or any other parameter from the Qajax.defaults**.
   //
@@ -77,7 +78,8 @@
       xhrResult = Q.defer(),
       timeout = getOrElse("timeout", settings),
       headers = extend1({}, getOrElse("headers", settings)),
-      cacheParam = getOrElse("cache", settings);
+      cacheParam = getOrElse("cache", settings),
+      withCredentials = getOrElse("withCredentials", settings);
 
     if (cacheParam) {
       params[cacheParam === true ? "_" : cacheParam] = (new Date()).getTime();
@@ -137,6 +139,10 @@
         if (headers.hasOwnProperty(h)) {
           xhr.setRequestHeader(h, headers[h]);
         }
+      }
+
+      if (withCredentials) {
+        xhr.withCredentials = true;
       }
 
       // Send the XHR

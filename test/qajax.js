@@ -58,6 +58,18 @@ asyncTest("simple Qajax() successful", 1, function() {
      .fin(start);
 });
 
+asyncTest("simple Qajax() and withCredentials successful", 1, function() {
+  resetDefaults();
+  function checkResult (res) {
+    deepEqual(res, sample01json, "sample01.json successfully retrieved.");
+  }
+  Qajax(sample01url, { withCredentials: true })
+      .then(Qajax.filterSuccess)
+      .then(Qajax.toJSON)
+      .then(checkResult, checkNotError)
+      .fin(start);
+});
+
 asyncTest("failure when 404 Not Found", 2, function() {
   resetDefaults();
   function checkError (e) {

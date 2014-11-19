@@ -35,17 +35,14 @@
  */</span>
 <span class="hljs-comment">/*jslint newcap: true */</span>
 (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(definition)</span> </span>{
-  <span class="hljs-keyword">var</span> Q;
   <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports === <span class="hljs-string">"object"</span>) {
-    Q = <span class="hljs-built_in">require</span>(<span class="hljs-string">"q"</span>);
-    <span class="hljs-built_in">module</span>.exports = definition(Q);
+    <span class="hljs-built_in">module</span>.exports = definition(<span class="hljs-built_in">require</span>(<span class="hljs-string">"q"</span>));
   }
   <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd){
     define([<span class="hljs-string">'q'</span>], definition);
   }
   <span class="hljs-keyword">else</span> {
-    Q = <span class="hljs-built_in">window</span>.Q;
-    <span class="hljs-built_in">window</span>.Qajax = definition(Q);
+    Qajax = definition(Q);
   }
 })(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Q)</span> </span>{
 <span class="hljs-pi">  "use strict"</span>;</pre></div></div>
@@ -112,6 +109,7 @@
 <li><code>data</code> <strong>(any)</strong> <em>optional</em>: the data to send.</li>
 <li>headers <strong>(object)</strong> <em>optional</em>: a map of headers to use for the XHR.</li>
 <li><code>responseType</code> <strong>(string)</strong> <em>optional</em>: a responseType to set the XHR with.</li>
+<li><code>withCredentials</code> <strong>(boolean)</strong> <em>optional</em>: set the XHR withCredentials attribute <em>(default: false)</em>.</li>
 <li><code>cancellation</code> <strong>(Promise)</strong> <em>optional</em>: provide a “cancellation” promise which if fulfilled will cancel the current XHR.</li>
 <li><strong>Or any other parameter from the Qajax.defaults</strong>.</li>
 </ul>
@@ -166,7 +164,8 @@
       xhrResult = Q.defer(),
       timeout = getOrElse(<span class="hljs-string">"timeout"</span>, settings),
       headers = extend1({}, getOrElse(<span class="hljs-string">"headers"</span>, settings)),
-      cacheParam = getOrElse(<span class="hljs-string">"cache"</span>, settings);
+      cacheParam = getOrElse(<span class="hljs-string">"cache"</span>, settings),
+      withCredentials = getOrElse(<span class="hljs-string">"withCredentials"</span>, settings);
 
     <span class="hljs-keyword">if</span> (cacheParam) {
       params[cacheParam === <span class="hljs-literal">true</span> ? <span class="hljs-string">"_"</span> : cacheParam] = (<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()).getTime();
@@ -302,6 +301,10 @@
         <span class="hljs-keyword">if</span> (headers.hasOwnProperty(h)) {
           xhr.setRequestHeader(h, headers[h]);
         }
+      }
+
+      <span class="hljs-keyword">if</span> (withCredentials) {
+        xhr.withCredentials = <span class="hljs-literal">true</span>;
       }</pre></div></div>
             
         </li>
@@ -495,7 +498,7 @@ If a string, will use it as the param name</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    cache: <span class="hljs-built_in">window</span>.ActiveXObject || <span class="hljs-string">"ActiveXObject"</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">window</span>,</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    cache: !!(<span class="hljs-built_in">window</span>.ActiveXObject || <span class="hljs-string">"ActiveXObject"</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">window</span>),</pre></div></div>
             
         </li>
         
@@ -506,7 +509,7 @@ If a string, will use it as the param name</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
-              <p><code>method</code> <strong>(string)</strong>: The default HTTP method to apply when calling Qajax(url) </p>
+              <p><code>method</code> <strong>(string)</strong>: The default HTTP method to apply when calling Qajax(url)</p>
 
             </div>
             
