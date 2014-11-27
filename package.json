@@ -26,6 +26,10 @@
       "name": "Paul Dijou",
       "email": "paul.dijou+dev@gmail.com",
       "url": "http://pauldijou.com"
+    },
+    {
+      "name": "Alexey Chuvashov",
+      "email": "alexeychu@gmail.com"
     }
   ],
   "dependencies": {
