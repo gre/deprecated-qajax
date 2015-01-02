@@ -8,19 +8,22 @@ Supported browsers
 ---
 
 All browsers are supported (including IE).
+Node.js is also supported via `xmlhttprequest` dependency.
 
 Current master state is: [![Test Status](https://saucelabs.com/buildstatus/qajax)](https://saucelabs.com/u/qajax)
 
 Installation
 ---
 
-**Qajax** is a [NPM package](https://npmjs.org/package/qajax).
+**Qajax** is a [NPM package](https://npmjs.org/package/qajax) that you can use from browserify and Node.js.
 
 ```json
 dependencies: {
-  "qajax": "0.2.x"
+  "qajax": "1.0.x"
 }
 ```
+
+You can also use the library as standalone by taking `src/qajax.js` or `build/qajax.min.js`.
 
 Links
 ---
