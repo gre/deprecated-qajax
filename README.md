@@ -25,11 +25,6 @@ dependencies: {
 
 You can also use the library as standalone by taking `src/qajax.js` or `build/qajax.min.js`.
 
-Links
----
-
-[Checkout the Annotated Source Code](http://greweb.me/qajax/docs/src/qajax.html)
-
 Usages and explanations
 ---
 
