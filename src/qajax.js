@@ -60,6 +60,7 @@
     }
 
     // Instance defaults (other defaults are extended by prototype)
+    this.headers = {};
     this.params = {};
     for (var key in settings)
       this[key] = settings[key];
@@ -102,7 +103,6 @@
     timeout: 60000,
     cache: typeof window === "undefined" ? false : !!(window.ActiveXObject || "ActiveXObject" in window), // By default, only enabled on old IE (also the presence of ActiveXObject is a nice correlation with the cache bug)
     method: "GET",
-    headers: {},
     base: "",
     withCredentials: false,
     cancellation: neverEnding,
