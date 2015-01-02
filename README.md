@@ -223,6 +223,7 @@ Release Notes
 * Removed `Qajax.TIMEOUT`. Use `Qajax.defaults.timeout` instead.
 * Replace `Qajax.defaults.logs` boolean by `Qajax.defaults.log` logging function. Usage Example: `Qajax.defaults.log=console.log.bind(console);`
 * Major refactoring to prefer prototyping over object-copy per instance. Also allowing to have different instance of Qajax and ease inheritance through `Qajax.Builder`.
+* Support for node.js.
 
 **0.2.6**
 
