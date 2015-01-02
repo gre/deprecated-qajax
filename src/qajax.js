@@ -2,17 +2,19 @@
  * Qajax.js - Simple Promise ajax library based on Q
  */
 /*jslint newcap: true */
-(function (definition) {
+(function (global, definition) {
   if (typeof exports === "object") {
-    module.exports = definition(require("q"));
+    module.exports = definition;
   }
   else if (typeof define === 'function' && define.amd){
-    define(['q'], definition);
+    define(['q'], function (Q) {
+      return definition(Q, global.XMLHttpRequest);
+    });
   }
   else {
-    window.Qajax = definition(window.Q);
+    global.Qajax = definition(global.Q, global.XMLHttpRequest);
   }
-})(function (Q) {
+})(this, function (Q, XMLHttpRequest) {
   "use strict";
 
   var CONTENT_TYPE = "Content-Type";
@@ -99,7 +101,7 @@
     
     log: noop, // Provide a `log` function. by default there won't be logs.
     timeout: 60000,
-    cache: !!(window.ActiveXObject || "ActiveXObject" in window),
+    cache: typeof window === "undefined" ? false : !!(window.ActiveXObject || "ActiveXObject" in window),
     method: "GET",
     headers: {},
     base: "",
@@ -108,7 +110,7 @@
 
 
     _send: function () {
-      var xhr = new window.XMLHttpRequest(),
+      var xhr = new XMLHttpRequest(),
         xhrResult = Q.defer(),
         log = this.log,
         method = this.method,

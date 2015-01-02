@@ -1,7 +1,6 @@
 {
     "globals": {
       "window": true,
-      "document": true,
       "define": true
     },
     "indent": 2,

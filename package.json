@@ -2,6 +2,8 @@
   "name": "qajax",
   "version": "0.2.6",
   "description": "Simple Promise ajax library based on Q",
+  "main": "src/node.js",
+  "browser": "src/browser.js",
   "keywords": [
     "q",
     "promise",
@@ -33,7 +35,8 @@
     }
   ],
   "dependencies": {
-    "q": "1.0.x"
+    "q": "1.0.x",
+    "xmlhttprequest": "^1.6.0"
   },
   "devDependencies": {
     "connect": "~3.3.3",
@@ -46,7 +49,6 @@
     "grunt-saucelabs": "~8.4.1",
     "serve-static": "^1.7.1"
   },
-  "main": "src/qajax.js",
   "license": "BSD",
   "repository": {
     "type": "git",
