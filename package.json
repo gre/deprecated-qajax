@@ -1,6 +1,6 @@
 {
   "name": "qajax",
-  "version": "0.2.6",
+  "version": "1.0.0",
   "description": "Simple Promise ajax library based on Q",
   "main": "src/node.js",
   "browser": "src/browser.js",
