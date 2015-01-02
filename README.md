@@ -218,6 +218,29 @@ Then run ```grunt```.
 Release Notes
 ---
 
+**1.0.0**
+
+* Removed `Qajax.TIMEOUT`. Use `Qajax.defaults.timeout` instead.
+* Replace `Qajax.defaults.logs` boolean by `Qajax.defaults.log` logging function. Usage Example: `Qajax.defaults.log=console.log.bind(console);`
+* Major refactoring to prefer prototyping over object-copy per instance. Also allowing to have different instance of Qajax and ease inheritance through `Qajax.Builder`.
+
+**0.2.6**
+
+* add withCredentials attribute support to XMLHttpRequest. thanks to @eychu
+
+**0.2.5**
+
+* Support closure compiler advanced optimisations. thanks to @jfilip
+* Cast cache as a boolean. thanks to @baloo
+
+**0.2.3**
+
+* add responseType parameter.
+
+**0.2.2**
+
+* update to `Q` version `1.0.0`
+
 **0.2.1**
 
 * Bugfix: default cache to true also set for IE11.
