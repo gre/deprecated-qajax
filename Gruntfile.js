@@ -104,19 +104,6 @@ module.exports = function(grunt) {
         src: ['src/<%= pkg.name %>.js']
       }
     },
-    docco: {
-      all: {
-        files: [{
-          expand: true,
-          cwd: 'src',
-          src: ['**/*.js']
-        }],
-        options: {
-          dst: 'docs',
-          layout: 'parallel'
-        }
-      }
-    },
     watch: {
       all: {
         files: ['src/*.js'],
@@ -143,7 +130,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-docco2');
   grunt.loadNpmTasks('grunt-saucelabs');
 
   grunt.registerTask('mock-server', 'Start a mock server to test Qajax.', function() {
@@ -162,14 +148,14 @@ module.exports = function(grunt) {
       });
       var handle = (function () {
         var status = ("status" in url.query) ? parseInt(url.query.status, 10) : 200;
-        if (url.pathname == "/ECHO_HEADERS") {
+        if (url.pathname === "/ECHO_HEADERS") {
           return function () {
             if (closed) return;
             res.write(JSON.stringify(req.headers));
             req.pipe(res);
           };
         }
-        if (url.pathname == "/ECHO") {
+        if (url.pathname === "/ECHO") {
           return function () {
             if (closed) return;
             res.writeHead(status);
@@ -180,7 +166,7 @@ module.exports = function(grunt) {
           req.method = "GET"; // next layer will behave like a GET so return the dataset content as a result.
           return function () {
             if (closed) return;
-            if (status != 200) {
+            if (status !== 200) {
               res.statusCode = status; // next layer will have this default statusCode for the response.
             }
             return next();
@@ -193,12 +179,12 @@ module.exports = function(grunt) {
       else
         handle();
     })
-    .use(connect.static(__dirname))
+    .use(require('serve-static')(__dirname))
     .listen(9999);
   });
 
   grunt.registerTask('default', ['compile', 'mock-server', 'watch']);
-  grunt.registerTask('compile', ['jshint', 'uglify', 'docco']);
+  grunt.registerTask('compile', ['jshint', 'uglify']);
   grunt.registerTask('test-sauce', ['mock-server', 'saucelabs-qunit']);
 
 };

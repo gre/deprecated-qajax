@@ -197,8 +197,7 @@ function getResults (query) {
 ```
 
 * More defaults:
-  * logs: Disable/Enable the logs
-  * ie: Disable/Enable the IE support
+  * log: Disable/Enable the logs
   * header: Global headers for all requests
   * base: A base url for all requests
 
