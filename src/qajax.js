@@ -42,7 +42,7 @@
     
     var settings;
     if (typeof urlOrSettings === "string") {
-      settings = (typeof maybeSettings === 'object' && maybeSettings) || {};
+      settings = typeof maybeSettings === 'object' && maybeSettings || {};
       settings.url = urlOrSettings;
     }
     else if (typeof urlOrSettings === "object") {
@@ -66,13 +66,12 @@
 
     // Handle the settings to prepare some work.
     var params = this.params;
-
     var cacheParam = this.cache;
     if (cacheParam)
       params[cacheParam === true ? "_" : cacheParam] = (new Date()).getTime();
 
     // Let's build the url based on the configuration
-    var url = (this.base||"") + this.url;
+    var url = this.base + this.url;
     var queryParams = serializeQuery(params);
     if (queryParams)
       url = url + (hasQuery(url) ? "?" : "&") + queryParams;
@@ -101,7 +100,7 @@
     
     log: noop, // Provide a `log` function. by default there won't be logs.
     timeout: 60000,
-    cache: typeof window === "undefined" ? false : !!(window.ActiveXObject || "ActiveXObject" in window),
+    cache: typeof window === "undefined" ? false : !!(window.ActiveXObject || "ActiveXObject" in window), // By default, only enabled on old IE (also the presence of ActiveXObject is a nice correlation with the cache bug)
     method: "GET",
     headers: {},
     base: "",
@@ -224,7 +223,7 @@
   };
 
   Qajax.filterSuccess = Qajax.filterStatus(function (s) {
-    return (s >= 200 && s < 300) || s === 304;
+    return s >= 200 && s < 300 || s === 304;
   });
 
   Qajax.toJSON = function (xhr) {
