@@ -33,7 +33,7 @@ test("check the API needed for the test engine", function() {
   ok(typeof Qajax.filterStatus=="function", "filterStatus exists");
   ok(typeof Qajax.filterSuccess=="function", "filterSuccess exists");
   ok(typeof Qajax.getJSON=="function", "getJSON exists");
-  equal(Qajax.serialize({ foo: 123, bar: "toto" }), "foo=123&bar=toto", "serialize works");
+  equal(Qajax.serialize({ foo: 123, bar: "toto", toto: undefined }), "foo=123&bar=toto", "serialize works (ignore undefined)");
 });
 
 asyncTest("simple Qajax.getJSON() successful", 1, function() {

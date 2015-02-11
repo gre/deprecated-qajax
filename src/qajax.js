@@ -26,7 +26,7 @@
   function serializeQuery(paramsObj) {
     var k, params = [];
     for (k in paramsObj) {
-      if (paramsObj.hasOwnProperty(k)) {
+      if (paramsObj.hasOwnProperty(k) && paramsObj[k] !== undefined) {
         params.push(encodeURIComponent(k) + "=" + encodeURIComponent(paramsObj[k]));
       }
     }
