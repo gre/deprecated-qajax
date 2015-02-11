@@ -37,6 +37,18 @@
     return (url.indexOf("?") === -1);
   }
 
+  function cloneObject (obj) {
+    var clone = {};
+    if (obj) {
+      for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          clone[key] = obj[key];
+        }
+      }
+    }
+    return clone;
+  }
+
   function QajaxBuilder (urlOrSettings, maybeSettings) {
     if (arguments.length === 0) throw new Error("Qajax: settings are required");
     
@@ -60,7 +72,7 @@
     }
 
     // Instance defaults (other defaults are extended by prototype)
-    this.headers = {};
+    this.headers = cloneObject(this.headers);
     this.params = {};
     for (var key in settings)
       this[key] = settings[key];
