@@ -55,24 +55,24 @@ At this time, the promise is only rejected if the server has failed to reply to 
 If you want to **filter only on success statuses**, then you need the `Qajax.filterSuccess` function:
 
 ```javascript
-var promiseOfSuccessfulXHR = 
+var promiseOfSuccessfulXHR =
   Qajax("/all.json").then(Qajax.filterSuccess);
 ```
 
 But you can also **provide you own filter logic**:
 
 ```javascript
-var promiseOf200XHR = 
+var promiseOf200XHR =
   Qajax("/all.json")
   .then(Qajax.filterStatus(function (code) {
-    return code == 200; /* only support 200 */ 
+    return code == 200; /* only support 200 */
   }));
 ```
 
 And at the end you can **map it to a JSON**:
 
 ```javascript
-var promiseOfJson = 
+var promiseOfJson =
   Qajax("/all.json")
   .then(Qajax.filterSuccess)
   .then(Qajax.toJSON);
@@ -115,7 +115,7 @@ Helpers
 **Qajax.serialize** helps you to deal with query string parameters:
 
 ```javascript
-var lastYearYoungPeople = 
+var lastYearYoungPeople =
   Qajax.getJSON("/people.json?"+Qajax.serialize({ from: "2012-01-01", to: "2013-01-01", "age$lt": 18 }));
   // will get from: "/people.json?from=2012-01-01&to=2013-01-01&age%24lt=18"
 ```
@@ -123,7 +123,7 @@ var lastYearYoungPeople =
 But alternatively, and more simply you can give a "params" object:
 
 ```javascript
-var lastYearYoungPeople = 
+var lastYearYoungPeople =
   Qajax({
     url: "/people.json",
     // This params object will be serialized in the URL
@@ -217,6 +217,20 @@ Then run ```grunt```.
 
 Release Notes
 ---
+
+**1.3.0**
+
+* Add support for FormData passed in `data`.
+* `Q @ 1.4.x`
+
+**1.2.0**
+
+* `Q @ 1.2.x`
+
+**1.1.0**
+
+* Bugfix: Allow headers to be define globally
+* Ignore undefined parameters in serialize
 
 **1.0.0**
 
