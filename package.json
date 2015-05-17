@@ -35,7 +35,7 @@
     }
   ],
   "dependencies": {
-    "q": "^1.2.0",
+    "q": "^1.4.1",
     "xmlhttprequest": "^1.6.0"
   },
   "devDependencies": {
