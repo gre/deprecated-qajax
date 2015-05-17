@@ -8,13 +8,13 @@
   }
   else if (typeof define === 'function' && define.amd){
     define(['q'], function (Q) {
-      return definition(Q, global.XMLHttpRequest);
+      return definition(Q, global.XMLHttpRequest, global.FormData);
     });
   }
   else {
-    global.Qajax = definition(global.Q, global.XMLHttpRequest);
+    global.Qajax = definition(global.Q, global.XMLHttpRequest, global.FormData);
   }
-})(this, function (Q, XMLHttpRequest) {
+})(this, function (Q, XMLHttpRequest, FormData) {
   "use strict";
 
   var CONTENT_TYPE = "Content-Type";
@@ -51,7 +51,7 @@
 
   function QajaxBuilder (urlOrSettings, maybeSettings) {
     if (arguments.length === 0) throw new Error("Qajax: settings are required");
-    
+
     var settings;
     if (typeof urlOrSettings === "string") {
       settings = typeof maybeSettings === 'object' && maybeSettings || {};
@@ -93,12 +93,15 @@
     // if data is a Javascript object, JSON is used
     var data = this.data;
     var headers = this.headers;
-    if (data !== null && typeof data === "object") {
+    if (
+      data !== null &&
+      typeof data === "object" &&
+      (!FormData || !(data instanceof FormData))) {
       if (!(CONTENT_TYPE in headers))
         headers[CONTENT_TYPE] = "application/json";
       this.data = JSON.stringify(data);
     }
-  
+
     // Protect send from any exception which will be encapsulated in a failure.
     var _send = this._send;
     var ctx = this;
@@ -110,7 +113,7 @@
   QajaxBuilder.prototype = {
 
     // Qajax defaults are stored in the QajaxBuilder prototype*
-    
+
     log: noop, // Provide a `log` function. by default there won't be logs.
     timeout: 60000,
     cache: typeof window === "undefined" ? false : !!(window.ActiveXObject || "ActiveXObject" in window), // By default, only enabled on old IE (also the presence of ActiveXObject is a nice correlation with the cache bug)
