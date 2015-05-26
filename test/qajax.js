@@ -27,6 +27,14 @@ function log (o) {
 function checkNotSuccess (res) { log(res); throw "The result should never be successful!"; }
 function checkNotError (err) { log(err); throw "An error has been reached. "+err; }
 
+function match(regex, s) {
+  if (!regex.test(s)) {
+    equal(false, true, regex + ' did not match: ' + s);
+  } else {
+    ok(true);
+  }
+}
+
 test("check the API needed for the test engine", function() {
   resetDefaults();
   ok(typeof Qajax=="function", "Qajax exists");
@@ -116,6 +124,26 @@ asyncTest("json data can be sent", function() {
     .then(Qajax.filterSuccess)
     .then(Qajax.toJSON)
     .then(checkData, checkNotError)
+    .fin(start);
+});
+
+asyncTest("FormData can be sent as multipart/formdata", function () {
+  resetDefaults();
+  var data = new FormData();
+  data.append('someFormKey', 'someFormValue');
+  Qajax({
+    method: "POST",
+    url: "/ECHO_HEADERS",
+    data: data
+  })
+    .then(Qajax.filterSuccess)
+    .then(function (response) {
+      // We cannot parse the responseText so we just use regexes to check for what we want.
+      match(/"content-type":"multipart\/form-data/, response.responseText);
+      match(/Content-Disposition: form-data; name="someFormKey"/, response.responseText);
+      match(/someFormValue/, response.responseText);
+    })
+    .fail(checkNotError)
     .fin(start);
 });
 
